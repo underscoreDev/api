@@ -1,21 +1,38 @@
+import { Response } from "express";
 import { User } from "src/users/entities/user.entity";
 import { UsersService } from "src/users/users.service";
-import { CreateUserDto, CreateUserParams } from "src/users/dto/create-user.dto";
+import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { UpdateUserDto } from "src/users/dto/update-user.dto";
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+  Res,
+  HttpStatus,
+} from "@nestjs/common";
 
 @Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<CreateUserParams & User> {
-    return await this.usersService.create(createUserDto);
+  async create(
+    @Res() res: Response,
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<Response<User>> {
+    const createdUser = await this.usersService.create(createUserDto);
+    return res.status(HttpStatus.CREATED).json({ status: "success", data: createdUser });
   }
 
   @Get()
-  findAll(): Promise<User[]> {
-    return this.usersService.findAll();
+  async findAll(@Res() res: Response): Promise<Response<User[]>> {
+    const users = await this.usersService.findAll();
+    return res.status(HttpStatus.OK).json({ status: "success", count: users.length, data: users });
   }
 
   @Get(":id")

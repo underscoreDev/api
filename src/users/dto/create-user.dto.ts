@@ -10,6 +10,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   phoneNumber: string;
 }
+
 export interface CreateUserParams {
   name: string;
   email: string;
