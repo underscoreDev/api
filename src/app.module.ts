@@ -3,6 +3,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UsersModule } from "./users/users.module";
+import { User } from "src/users/entities/user.entity";
 
 @Module({
   imports: [
@@ -14,10 +15,11 @@ import { UsersModule } from "./users/users.module";
       username: "root",
       password: process.env.LOCAL_DATABASE_PASSWORD,
       database: "nestjstest",
-      entities: [UsersModule],
+      entities: [User],
       synchronize: process.env.NODE_ENV === "development",
       logging: true,
     }),
+    UsersModule,
   ],
   controllers: [],
   providers: [],

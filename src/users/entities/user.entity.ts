@@ -1,3 +1,4 @@
+import { IsEmail } from "class-validator";
 import {
   Column,
   CreateDateColumn,
@@ -12,7 +13,8 @@ export class User {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
+  @Column({ unique: true })
+  @IsEmail()
   email: string;
 
   @Column()
@@ -21,7 +23,7 @@ export class User {
   @Column()
   phoneNumber: string;
 
-  @Column()
+  @Column({ default: false })
   isEmailVerified: boolean;
 
   @CreateDateColumn()
