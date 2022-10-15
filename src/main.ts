@@ -1,6 +1,6 @@
+import { AppModule } from "src/app.module";
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
-import { AppModule } from "src/app.module";
 
 const port = process.env.PORT || 8989;
 
