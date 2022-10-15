@@ -1,8 +1,8 @@
 import { Repository } from "typeorm";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { IReview } from "src/reviews/dto/create-review.dto";
 import { Review } from "src/reviews/entities/reviews.entity";
-import { IReview } from "./dto/create-review.dto";
 
 @Injectable()
 export class ReviewsService {

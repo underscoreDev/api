@@ -1,10 +1,9 @@
-import { Controller, Get, Res } from "@nestjs/common";
-import { Body, Post } from "@nestjs/common/decorators";
-import { HttpStatus } from "@nestjs/common/enums";
 import { Response } from "express";
-import { ReviewsService } from "./reviews.service";
-import { CreateReviewDto } from "src/reviews/dto/create-review.dto";
+import { HttpStatus } from "@nestjs/common/enums";
+import { ReviewsService } from "src/reviews/reviews.service";
 import { Review } from "src/reviews/entities/reviews.entity";
+import { Controller, Get, Res, Body, Post } from "@nestjs/common";
+import { CreateReviewDto } from "src/reviews/dto/create-review.dto";
 
 @Controller("reviews")
 export class ReviewsController {
