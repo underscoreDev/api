@@ -22,8 +22,6 @@ export class Review {
   description: string;
 
   @Column()
-  @Min(0)
-  @Max(5)
   rating: number;
 
   @CreateDateColumn()
@@ -35,7 +33,6 @@ export class Review {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @Column()
   @ManyToOne(() => User, (user: User) => user.reviews)
   user: User;
 }
