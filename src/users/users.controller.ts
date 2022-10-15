@@ -11,7 +11,7 @@ import {
   Patch,
   Param,
   Delete,
-  ParseIntPipe,
+  ParseUUIDPipe,
   Res,
   HttpStatus,
 } from "@nestjs/common";
@@ -36,17 +36,17 @@ export class UsersController {
   }
 
   @Get(":id")
-  findOne(@Param("id", ParseIntPipe) id: string) {
-    return this.usersService.findOne(id);
+  async findOne(@Param("id", new ParseUUIDPipe()) id: string): Promise<User> {
+    return await this.usersService.findOne(id);
   }
 
   @Patch(":id")
-  update(@Param("id", ParseIntPipe) id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(@Param("id", new ParseUUIDPipe()) id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(":id")
-  remove(@Param("id", ParseIntPipe) id: string) {
+  remove(@Param("id", new ParseUUIDPipe()) id: string) {
     return this.usersService.remove(id);
   }
 }

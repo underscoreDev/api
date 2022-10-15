@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { DeleteResult, Repository, UpdateResult } from "typeorm";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/users/entities/user.entity";
@@ -17,11 +17,15 @@ export class UsersService {
     return await this.usersRepository.find();
   }
 
-  findOne(id: string) {}
-
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async findOne(id: string): Promise<User> {
+    return await this.usersRepository.findOneBy({ id });
   }
 
-  remove(id: string) {}
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<UpdateResult> {
+    return await this.usersRepository.update({ id }, { ...updateUserDto });
+  }
+
+  async remove(id: string): Promise<DeleteResult> {
+    return await this.usersRepository.delete({ id });
+  }
 }
