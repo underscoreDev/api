@@ -11,3 +11,9 @@ export class CreateReviewDto {
   @IsNumber()
   rating: number;
 }
+
+export interface IReview {
+  title: string;
+  description: string;
+  rating: number;
+}

@@ -1,3 +1,4 @@
+import { Max, Min } from "class-validator";
 import { User } from "src/users/entities/user.entity";
 import {
   Column,
@@ -20,7 +21,9 @@ export class Review {
   @Column()
   description: string;
 
-  @Column({})
+  @Column()
+  @Min(0)
+  @Max(5)
   rating: number;
 
   @CreateDateColumn()
