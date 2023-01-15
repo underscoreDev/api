@@ -1,5 +1,5 @@
-import { Logger, NestMiddleware, Injectable } from "@nestjs/common";
 import { Request, Response, NextFunction } from "express";
+import { Logger, NestMiddleware, Injectable } from "@nestjs/common";
 
 @Injectable()
 export class RouteLogger implements NestMiddleware {
@@ -13,7 +13,8 @@ export class RouteLogger implements NestMiddleware {
       const { statusCode, statusMessage } = response;
 
       this.logger.log(
-        `[${new Date().toUTCString()}]:: [${userAgent}] [${ip}] [${method}] [${originalUrl}] - ${statusCode}: ${statusMessage}`,
+        `DATE: [${new Date().toUTCString()}]  METHOD: [${method}]  ROUTE: [${originalUrl}]  STATUS CODE: [${statusCode}]  MESSAGE: [${statusMessage}]`,
+        // `DATE: [${new Date().toUTCString()}] :-: USER-AGENT: [${userAgent}] :-: IP-ADDRESS: [${ip}] :-: METHOD: [${method}] :-: ROUTE: [${originalUrl}] :-: STATUS CODE: [${statusCode}] :-: MESSAGE: [${statusMessage}]`,
       );
     });
     nextFunction();

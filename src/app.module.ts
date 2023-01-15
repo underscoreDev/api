@@ -1,11 +1,12 @@
-import { Module, NestModule, MiddlewareConsumer } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UsersModule } from "src/users/users.module";
 import { User } from "src/users/entities/user.entity";
 import { ReviewsModule } from "src/reviews/reviews.module";
 import { Review } from "src/reviews/entities/reviews.entity";
-import { RouteLogger } from "./middlewares/logger.middleware";
+import { RouteLogger } from "src/middlewares/logger.middleware";
+import { Module, NestModule, MiddlewareConsumer } from "@nestjs/common";
+import morgan from "morgan";
 
 @Module({
   imports: [
