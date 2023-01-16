@@ -6,6 +6,7 @@ import { UsersModule } from "src/users/users.module";
 import { User } from "src/users/entities/user.entity";
 import { ReviewsModule } from "src/reviews/reviews.module";
 import { Review } from "src/reviews/entities/reviews.entity";
+import { AuthModule } from "./auth/auth.module";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { Review } from "src/reviews/entities/reviews.entity";
       synchronize: true,
       logging: false,
     }),
+    AuthModule,
     UsersModule,
     ReviewsModule,
   ],
