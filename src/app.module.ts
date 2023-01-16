@@ -1,12 +1,12 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { AuthModule } from "src/auth/auth.module";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { UsersModule } from "src/users/users.module";
 import { User } from "src/users/entities/user.entity";
 import { ReviewsModule } from "src/reviews/reviews.module";
 import { Review } from "src/reviews/entities/reviews.entity";
-import { AuthModule } from "./auth/auth.module";
 
 @Module({
   imports: [

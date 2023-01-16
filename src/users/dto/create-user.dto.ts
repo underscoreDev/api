@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Match } from "src/users/decorators/match.decorator";
 import { IsEmail, IsNotEmpty, Length } from "class-validator";
-import { Match } from "../decorators/match.decorator";
-import { IsEmailAlreadyExist } from "../decorators/email.decorator";
-import { IsPhoneNumberAlreadyExist } from "../decorators/phoneNumber.decorator";
+import { IsEmailAlreadyExist } from "src/users/decorators/email.decorator";
+import { IsPhoneNumberAlreadyExist } from "src/users/decorators/phoneNumber.decorator";
 
 export class CreateUserDto {
   @IsNotEmpty()

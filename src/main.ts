@@ -4,10 +4,10 @@ import * as morgan from "morgan";
 import { AppModule } from "src/app.module";
 import * as compression from "compression";
 import * as cookieParser from "cookie-parser";
-import { BadRequestException, ValidationPipe } from "@nestjs/common";
+import { ValidationPipe } from "@nestjs/common";
+import { NestFactory, NestApplication } from "@nestjs/core";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { HttpExceptionFilter } from "src/utils/all-exception-filter";
-import { NestFactory, NestApplication } from "@nestjs/core";
 
 const bootstrap = async () => {
   const app = await NestFactory.create<NestApplication>(AppModule);
@@ -31,12 +31,7 @@ const bootstrap = async () => {
   SwaggerModule.setup("/", app, document);
   fs.writeFileSync("./swagger-documentation.json", JSON.stringify(document));
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-    }),
-  );
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalFilters(new HttpExceptionFilter());
   await app.listen(8989);
 };

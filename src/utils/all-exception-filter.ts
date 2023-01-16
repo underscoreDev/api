@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import { HttpStatus } from "@nestjs/common/enums";
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from "@nestjs/common";
-import { TypeORMError } from "typeorm";
 
-@Catch(HttpException, TypeORMError)
+@Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();

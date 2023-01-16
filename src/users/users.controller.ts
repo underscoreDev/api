@@ -1,9 +1,9 @@
 import { Response } from "express";
+import { ApiTags } from "@nestjs/swagger";
 import { User } from "src/users/entities/user.entity";
 import { UsersService } from "src/users/users.service";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { UpdateUserDto } from "src/users/dto/update-user.dto";
-import { ApiTags } from "@nestjs/swagger";
 import {
   Controller,
   Get,
