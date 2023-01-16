@@ -1,16 +1,21 @@
+import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { ThrottlerModule } from "@nestjs/throttler";
 import { UsersModule } from "src/users/users.module";
 import { User } from "src/users/entities/user.entity";
 import { ReviewsModule } from "src/reviews/reviews.module";
 import { Review } from "src/reviews/entities/reviews.entity";
-import { RouteLogger } from "src/middlewares/logger.middleware";
-import { Module, NestModule, MiddlewareConsumer } from "@nestjs/common";
-import morgan from "morgan";
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
+    }),
+
     TypeOrmModule.forRoot({
       type: "mysql",
       host: "localhost",
@@ -26,8 +31,4 @@ import morgan from "morgan";
     ReviewsModule,
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(RouteLogger).forRoutes("*");
-  }
-}
+export class AppModule {}
