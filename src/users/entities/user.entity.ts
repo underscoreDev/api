@@ -6,14 +6,14 @@ import { Review } from "src/reviews/entities/reviews.entity";
 
 @Entity({ name: "users" })
 export class User extends BaseModel {
+  @Column()
+  @ApiProperty()
+  name: string;
+
   @Column({ unique: true })
   @IsEmail()
   @ApiProperty()
   email: string;
-
-  @Column()
-  @ApiProperty()
-  name: string;
 
   @Column({ unique: true })
   @ApiProperty()

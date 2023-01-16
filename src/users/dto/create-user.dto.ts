@@ -1,5 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, Length } from "class-validator";
+import { Match } from "../decorators/match.decorator";
+import { IsEmailAlreadyExist } from "../decorators/email.decorator";
+import { IsPhoneNumberAlreadyExist } from "../decorators/phoneNumber.decorator";
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -8,10 +11,16 @@ export class CreateUserDto {
 
   @IsEmail()
   @ApiProperty()
+  @IsEmailAlreadyExist({
+    message: "This Email: $value already exists. Please Enter another Email.",
+  })
   email: string;
 
   @IsNotEmpty()
   @ApiProperty()
+  @IsPhoneNumberAlreadyExist({
+    message: "This Phone Number: $value already exists. Please Enter another Phone Number.",
+  })
   phoneNumber: string;
 
   @IsNotEmpty()
@@ -22,6 +31,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   @ApiProperty()
   @Length(6, 24)
+  @Match("password")
   passwordConfirm: string;
 }
 
@@ -33,7 +43,7 @@ export interface CreateUserParams {
 
 /** TODO
  * Serialized user (Returning the user without the password)
- * custom validator for validating the password and password confirm field
- * custom validator for validating the phone number field
- * custom validator for validating the email number field
+ * custom validator for validating the password and password confirm field --- done
+ * custom validator for validating the phone number field --- done
+ * custom validator for validating the email number field --- done
  */

@@ -19,8 +19,6 @@ const bootstrap = async () => {
   app.use(compression());
   app.use(helmet());
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-
   const config = new DocumentBuilder()
     .setTitle("NestJs Hackathon Kit")
     .setDescription("NestJs API Starter Hackthon Kit")
@@ -33,7 +31,8 @@ const bootstrap = async () => {
   SwaggerModule.setup("/", app, document);
   fs.writeFileSync("./swagger-documentation.json", JSON.stringify(document));
 
-  app.useGlobalFilters(new HttpExceptionFilter());
+  // app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   await app.listen(8989);
 };
 
