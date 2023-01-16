@@ -1,20 +1,9 @@
-import { Max, Min } from "class-validator";
+import BaseModel from "src/utils/model.entity";
+import { Column, Entity, ManyToOne } from "typeorm";
 import { User } from "src/users/entities/user.entity";
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
 
 @Entity({ name: "reviews" })
-export class Review {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
+export class Review extends BaseModel {
   @Column()
   title: string;
 
@@ -23,15 +12,6 @@ export class Review {
 
   @Column()
   rating: number;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @DeleteDateColumn()
-  deletedAt: Date;
 
   @ManyToOne(() => User, (user: User) => user.reviews)
   user: User;

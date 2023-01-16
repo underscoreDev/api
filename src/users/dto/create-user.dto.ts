@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, Matches, Length } from "class-validator";
-const PASSWORD_RULE = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+import { IsEmail, IsNotEmpty, Length } from "class-validator";
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -15,22 +14,14 @@ export class CreateUserDto {
   @ApiProperty()
   phoneNumber: string;
 
-  @ApiProperty({
-    description: "The password of the User",
-    example: "Password@123",
-  })
   @IsNotEmpty()
-  @Length(8, 24)
-  @Matches(PASSWORD_RULE, { message: "Passwords must match" })
+  @ApiProperty()
+  @Length(6, 24)
   password: string;
 
-  @ApiProperty({
-    description: "Confirm the password",
-    example: "Password@123",
-  })
   @IsNotEmpty()
-  @Length(8, 24)
-  @Matches(PASSWORD_RULE, { message: "Password confirm must match with password" })
+  @ApiProperty()
+  @Length(6, 24)
   passwordConfirm: string;
 }
 
@@ -39,3 +30,10 @@ export interface CreateUserParams {
   email: string;
   phoneNumber: string;
 }
+
+/** TODO
+ * Serialized user (Returning the user without the password)
+ * custom validator for validating the password and password confirm field
+ * custom validator for validating the phone number field
+ * custom validator for validating the email number field
+ */

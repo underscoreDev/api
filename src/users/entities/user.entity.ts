@@ -19,14 +19,14 @@ export class User extends BaseModel {
   @ApiProperty()
   phoneNumber: string;
 
+  @Column()
+  @ApiProperty()
+  password: string;
+
   @Column({ default: false })
   @ApiProperty()
   isEmailVerified: boolean;
 
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
-
-  @Column()
-  @ApiProperty()
-  password: string;
 }
