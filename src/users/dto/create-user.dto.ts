@@ -9,6 +9,9 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   phoneNumber: string;
+
+  @IsNotEmpty()
+  password: string;
 }
 
 export interface CreateUserParams {

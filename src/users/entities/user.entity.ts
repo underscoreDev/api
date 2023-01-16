@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { IsEmail } from "class-validator";
 import { Review } from "src/reviews/entities/reviews.entity";
 import {
@@ -39,4 +40,12 @@ export class User {
 
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
+
+  @Exclude()
+  @Column()
+  password: string;
+
+  constructor(partial: Partial<User>) {
+    Object.assign(this, partial);
+  }
 }
