@@ -1,4 +1,4 @@
-import BaseModel from "src/utils/model.entity";
+import BaseModel from "src/entities/baseModel.entity";
 import { Column, Entity, ManyToOne } from "typeorm";
 import { User } from "src/users/entities/user.entity";
 

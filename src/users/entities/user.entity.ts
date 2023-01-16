@@ -1,6 +1,6 @@
 import { IsEmail } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import BaseModel from "src/utils/model.entity";
+import BaseModel from "src/entities/baseModel.entity";
 import { Column, Entity, OneToMany } from "typeorm";
 import { Review } from "src/reviews/entities/reviews.entity";
 
