@@ -1,23 +1,11 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Exclude } from "class-transformer";
 import { IsEmail } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import BaseModel from "src/utils/model.entity";
+import { Column, Entity, OneToMany } from "typeorm";
 import { Review } from "src/reviews/entities/reviews.entity";
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
 
 @Entity({ name: "users" })
-export class User {
-  @PrimaryGeneratedColumn("uuid")
-  @ApiProperty()
-  id: string;
-
+export class User extends BaseModel {
   @Column({ unique: true })
   @IsEmail()
   @ApiProperty()
@@ -27,7 +15,7 @@ export class User {
   @ApiProperty()
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   @ApiProperty()
   phoneNumber: string;
 
@@ -35,27 +23,10 @@ export class User {
   @ApiProperty()
   isEmailVerified: boolean;
 
-  @CreateDateColumn()
-  @ApiProperty()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  @ApiProperty()
-  updatedAt: Date;
-
-  @DeleteDateColumn()
-  @ApiProperty()
-  deletedAt: Date;
-
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
 
-  @Exclude()
   @Column()
   @ApiProperty()
   password: string;
-
-  constructor(partial: Partial<User>) {
-    Object.assign(this, partial);
-  }
 }

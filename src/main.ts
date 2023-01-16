@@ -6,8 +6,8 @@ import * as compression from "compression";
 import * as cookieParser from "cookie-parser";
 import { ValidationPipe } from "@nestjs/common";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
-import { AllExceptionsFilter } from "src/utils/all-exception-filter";
-import { NestFactory, NestApplication, HttpAdapterHost } from "@nestjs/core";
+import { HttpExceptionFilter } from "src/utils/all-exception-filter";
+import { NestFactory, NestApplication } from "@nestjs/core";
 
 const bootstrap = async () => {
   const app = await NestFactory.create<NestApplication>(AppModule);
@@ -33,8 +33,7 @@ const bootstrap = async () => {
   SwaggerModule.setup("/", app, document);
   fs.writeFileSync("./swagger-documentation.json", JSON.stringify(document));
 
-  const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
+  app.useGlobalFilters(new HttpExceptionFilter());
   await app.listen(8989);
 };
 

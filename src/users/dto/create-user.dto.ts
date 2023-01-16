@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, MaxLength, MinLength, Validate } from "class-validator";
+import { IsEmail, IsNotEmpty, Matches, Length } from "class-validator";
+const PASSWORD_RULE = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -14,24 +15,22 @@ export class CreateUserDto {
   @ApiProperty()
   phoneNumber: string;
 
+  @ApiProperty({
+    description: "The password of the User",
+    example: "Password@123",
+  })
   @IsNotEmpty()
-  @ApiProperty()
-  @MinLength(6)
-  @MaxLength(20)
+  @Length(8, 24)
+  @Matches(PASSWORD_RULE, { message: "Passwords must match" })
   password: string;
 
+  @ApiProperty({
+    description: "Confirm the password",
+    example: "Password@123",
+  })
   @IsNotEmpty()
-  @ApiProperty()
-  @MinLength(6)
-  @MaxLength(20)
-  @Validate(
-    () => {
-      const user = this as CreateUserDto;
-      console.log(user);
-      return user.password === user.passwordConfirm;
-    },
-    { message: "Passwords do not match" },
-  )
+  @Length(8, 24)
+  @Matches(PASSWORD_RULE, { message: "Password confirm must match with password" })
   passwordConfirm: string;
 }
 
