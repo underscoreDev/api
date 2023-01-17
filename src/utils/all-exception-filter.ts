@@ -1,6 +1,12 @@
 import { Request, Response } from "express";
 import { HttpStatus } from "@nestjs/common/enums";
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from "@nestjs/common";
+import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+  BadRequestException,
+} from "@nestjs/common";
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -15,7 +21,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const cause = exception.cause;
     const name = exception.name;
     const message = exception.message;
-    const errors = exception["response"]["message"];
+    const errors =
+      exception instanceof BadRequestException ? exception["response"]["message"] : message;
 
     return response.status(httpStatus).json({
       statusCode: httpStatus,

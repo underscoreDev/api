@@ -35,12 +35,6 @@ export class CreateUserDto {
   passwordConfirm: string;
 }
 
-export interface CreateUserParams {
-  name: string;
-  email: string;
-  phoneNumber: string;
-}
-
 /** TODO
  * Serialized user (Returning the user without the password)
  * custom validator for validating the password and password confirm field --- done

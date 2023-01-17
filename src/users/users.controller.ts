@@ -2,12 +2,10 @@ import { Response } from "express";
 import { ApiTags } from "@nestjs/swagger";
 import { User } from "src/users/entities/user.entity";
 import { UsersService } from "src/users/users.service";
-import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { UpdateUserDto } from "src/users/dto/update-user.dto";
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
@@ -21,15 +19,6 @@ import {
 @ApiTags("Users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Post()
-  async create(
-    @Res() res: Response,
-    @Body() createUserDto: CreateUserDto,
-  ): Promise<Response<User>> {
-    const createdUser = await this.usersService.create(createUserDto);
-    return res.status(HttpStatus.CREATED).json({ status: "success", data: createdUser });
-  }
 
   @Get()
   async findAll(@Res() res: Response): Promise<Response<User[]>> {

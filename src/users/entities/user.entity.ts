@@ -1,8 +1,9 @@
+import * as bcrypt from "bcryptjs";
 import { IsEmail } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import BaseModel from "src/entities/baseModel.entity";
-import { Column, Entity, OneToMany } from "typeorm";
 import { Review } from "src/reviews/entities/reviews.entity";
+import { Column, Entity, OneToMany, BeforeInsert } from "typeorm";
 
 @Entity({ name: "users" })
 export class User extends BaseModel {
@@ -27,6 +28,21 @@ export class User extends BaseModel {
   @ApiProperty()
   isEmailVerified: boolean;
 
+  /**
+   * Relationships
+   */
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
+
+  /**
+   * Hooks
+   */
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 12);
+  }
+
+  static async comparePasswords(inputedPassword: string, hashedPassword: string) {
+    return await bcrypt.compare(inputedPassword, hashedPassword);
+  }
 }
