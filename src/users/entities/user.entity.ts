@@ -42,7 +42,14 @@ export class User extends BaseModel {
     this.password = await bcrypt.hash(this.password, 12);
   }
 
-  static async comparePasswords(inputedPassword: string, hashedPassword: string) {
+  /**
+   *  Compare Password Static Method
+   * @param inputedPassword string
+   * @param hashedPassword string
+   * @returns Promise<boolean>
+   */
+
+  static async comparePasswords(inputedPassword: string, hashedPassword: string): Promise<boolean> {
     return await bcrypt.compare(inputedPassword, hashedPassword);
   }
 }

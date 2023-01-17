@@ -1,11 +1,10 @@
 import { Module } from "@nestjs/common";
-import { AuthService } from "src/auth/auth.service";
-import { AuthController } from "src/auth/auth.controller";
-import { User } from "src/users/entities/user.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { LocalStrategy } from "./startegy/local.strategy";
-import { UsersModule } from "../users/users.module";
 import { PassportModule } from "@nestjs/passport";
+import { AuthService } from "src/auth/auth.service";
+import { User } from "src/users/entities/user.entity";
+import { AuthController } from "src/auth/auth.controller";
+import { LocalStrategy } from "src/auth/startegy/local.strategy";
 
 @Module({
   imports: [TypeOrmModule.forFeature([User]), PassportModule],

@@ -19,6 +19,7 @@ export class AuthService {
     if (user && (await User.comparePasswords(password, user.password))) {
       return user;
     }
+
     return null;
   }
 }
