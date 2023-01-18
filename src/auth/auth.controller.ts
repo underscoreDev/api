@@ -1,3 +1,4 @@
+import { Request as ERequest } from "express";
 import { LoginDto } from "src/users/dto/login.dto";
 import { AuthService } from "src/auth/auth.service";
 import { User } from "src/users/entities/user.entity";
@@ -5,7 +6,6 @@ import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { HttpCode, Controller, Post, Body, UseGuards, Request } from "@nestjs/common";
-import { Request as ERequest } from "express";
 
 @ApiTags("Auth")
 @Controller("auth")
