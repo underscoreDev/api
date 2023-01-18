@@ -20,14 +20,8 @@ export class GlobalErrorHandler implements ExceptionFilter {
       exception instanceof HttpException ? exception.getStatus() : HttpStatus.CONFLICT;
 
     const cause = exception.cause;
-    // const name = exception.name;
+    const name = exception.name;
     const message = exception.message;
-    const errors =
-      exception instanceof BadRequestException
-        ? exception["response"]["message"]
-        : exception instanceof UnauthorizedException
-        ? "The Token you are trying to use to bypass my server is either invalid or expired"
-        : message;
 
     return response.status(httpStatus).json({
       statusCode: httpStatus,
@@ -35,8 +29,16 @@ export class GlobalErrorHandler implements ExceptionFilter {
       path: request.url,
       message,
       cause,
-      // name,
-      "error(s)": errors,
+      name,
+
+      [exception instanceof BadRequestException || exception instanceof UnauthorizedException
+        ? "error"
+        : ""]:
+        exception instanceof BadRequestException
+          ? exception["response"]["message"]
+          : exception instanceof UnauthorizedException
+          ? "The Token you are trying to use to bypass my server is either invalid or expired"
+          : "",
     });
   }
 }

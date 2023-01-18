@@ -34,7 +34,7 @@ export class UsersController {
   }
 
   @Get(":id")
-  @Roles(Role.User, Role.Manager)
+  @Roles(Role.Admin, Role.Manager)
   async findOne(@Request() req: any, @Param("id", new ParseUUIDPipe()) id: string): Promise<User> {
     return await this.usersService.findOne(id);
   }

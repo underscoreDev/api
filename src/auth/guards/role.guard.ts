@@ -23,7 +23,9 @@ export class RolesGuard implements CanActivate {
     if (canPass) {
       return true;
     } else {
-      throw new ForbiddenException("Your Rank no reach, Ask your boss for promotion");
+      throw new ForbiddenException(
+        "Your Rank isn't high enough to access this resource, Ask your boss for promotion",
+      );
     }
   }
 }
