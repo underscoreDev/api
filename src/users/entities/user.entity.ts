@@ -1,10 +1,11 @@
 import * as bcrypt from "bcryptjs";
 import { IsEmail } from "class-validator";
+import { Exclude } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
 import BaseModel from "src/entities/baseModel.entity";
+import { Role } from "src/auth/decorators/role.decorator";
 import { Review } from "src/reviews/entities/reviews.entity";
 import { Column, Entity, OneToMany, BeforeInsert } from "typeorm";
-import { Role } from "src/auth/decorators/role.decorator";
 
 @Entity({ name: "users" })
 export class User extends BaseModel {
@@ -23,6 +24,7 @@ export class User extends BaseModel {
 
   @Column()
   @ApiProperty()
+  @Exclude()
   password: string;
 
   @Column({ default: false })
@@ -33,6 +35,10 @@ export class User extends BaseModel {
   @ApiProperty()
   role: Role;
 
+  constructor(partial: Partial<User>) {
+    super();
+    Object.assign(this, partial);
+  }
   /**
    * Relationships
    */

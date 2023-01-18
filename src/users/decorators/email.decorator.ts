@@ -10,6 +10,7 @@ import {
 @ValidatorConstraint({ async: true })
 export class IsEmailAlreadyExistConstraint implements ValidatorConstraintInterface {
   validate(email: any, args: ValidationArguments) {
+    // @ts-ignore
     return User.findOneBy({ email }).then((user) => {
       if (user) return false;
       return true;

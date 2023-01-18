@@ -5,10 +5,20 @@ import { User } from "src/users/entities/user.entity";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
-import { HttpCode, Controller, Post, Body, UseGuards, Request } from "@nestjs/common";
+import {
+  HttpCode,
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+} from "@nestjs/common";
 
 @ApiTags("Auth")
 @Controller("auth")
+@UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

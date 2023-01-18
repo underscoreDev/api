@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { HttpStatus } from "@nestjs/common/enums";
+import { UnauthorizedException } from "@nestjs/common";
 import {
   ExceptionFilter,
   Catch,
@@ -9,7 +10,7 @@ import {
 } from "@nestjs/common";
 
 @Catch()
-export class HttpExceptionFilter implements ExceptionFilter {
+export class GlobalErrorHandler implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -19,10 +20,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
       exception instanceof HttpException ? exception.getStatus() : HttpStatus.CONFLICT;
 
     const cause = exception.cause;
-    const name = exception.name;
+    // const name = exception.name;
     const message = exception.message;
     const errors =
-      exception instanceof BadRequestException ? exception["response"]["message"] : message;
+      exception instanceof BadRequestException
+        ? exception["response"]["message"]
+        : exception instanceof UnauthorizedException
+        ? "The Token you are trying to use to bypass my server is either invalid or expired"
+        : message;
 
     return response.status(httpStatus).json({
       statusCode: httpStatus,
@@ -30,8 +35,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       path: request.url,
       message,
       cause,
-      name,
-      errors,
+      // name,
+      "error(s)": errors,
     });
   }
 }
