@@ -7,6 +7,7 @@ import { UsersModule } from "src/users/users.module";
 import { User } from "src/users/entities/user.entity";
 import { ReviewsModule } from "src/reviews/reviews.module";
 import { Review } from "src/reviews/entities/reviews.entity";
+import { JwtStrategy } from "./auth/startegy/jwt.strategy";
 
 @Module({
   imports: [
@@ -32,5 +33,6 @@ import { Review } from "src/reviews/entities/reviews.entity";
     UsersModule,
     ReviewsModule,
   ],
+  providers: [JwtStrategy],
 })
 export class AppModule {}

@@ -5,6 +5,7 @@ import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { HttpCode, Controller, Post, Body, UseGuards, Request } from "@nestjs/common";
+import { Request as ERequest } from "express";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -20,7 +21,10 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post("login")
   @HttpCode(200)
-  async login(@Request() req, @Body() loginDto: LoginDto) {
-    return req.user;
+  async login(
+    @Request() req: ERequest & { user: User },
+    @Body() _loginDto: LoginDto,
+  ): Promise<{ token: string; status: string }> {
+    return await this.authService.login(req.user);
   }
 }

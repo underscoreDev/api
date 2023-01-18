@@ -13,10 +13,14 @@ import {
   ParseUUIDPipe,
   Res,
   HttpStatus,
+  UseGuards,
 } from "@nestjs/common";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { Request } from "@nestjs/common";
 
 @Controller("users")
 @ApiTags("Users")
+@UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -27,7 +31,7 @@ export class UsersController {
   }
 
   @Get(":id")
-  async findOne(@Param("id", new ParseUUIDPipe()) id: string): Promise<User> {
+  async findOne(@Request() req: any, @Param("id", new ParseUUIDPipe()) id: string): Promise<User> {
     return await this.usersService.findOne(id);
   }
 
