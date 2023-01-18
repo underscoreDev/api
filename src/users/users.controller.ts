@@ -1,12 +1,15 @@
 import { Response } from "express";
+import { Request } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
 import { User } from "src/users/entities/user.entity";
 import { UsersService } from "src/users/users.service";
-import { CreateUserDto } from "src/users/dto/create-user.dto";
+import { RolesGuard } from "src/auth/guards/role.guard";
 import { UpdateUserDto } from "src/users/dto/update-user.dto";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { Role, Roles } from "src/auth/decorators/role.decorator";
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
@@ -14,20 +17,14 @@ import {
   ParseUUIDPipe,
   Res,
   HttpStatus,
+  UseGuards,
 } from "@nestjs/common";
 
 @Controller("users")
+@ApiTags("Users")
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Post()
-  async create(
-    @Res() res: Response,
-    @Body() createUserDto: CreateUserDto,
-  ): Promise<Response<User>> {
-    const createdUser = await this.usersService.create(createUserDto);
-    return res.status(HttpStatus.CREATED).json({ status: "success", data: createdUser });
-  }
 
   @Get()
   async findAll(@Res() res: Response): Promise<Response<User[]>> {
@@ -36,7 +33,8 @@ export class UsersController {
   }
 
   @Get(":id")
-  async findOne(@Param("id", new ParseUUIDPipe()) id: string): Promise<User> {
+  @Roles(Role.Admin, Role.User)
+  async findOne(@Request() req: any, @Param("id", new ParseUUIDPipe()) id: string): Promise<User> {
     return await this.usersService.findOne(id);
   }
 
