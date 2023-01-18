@@ -8,6 +8,8 @@ import { User } from "src/users/entities/user.entity";
 import { ReviewsModule } from "src/reviews/reviews.module";
 import { Review } from "src/reviews/entities/reviews.entity";
 import { JwtStrategy } from "./auth/startegy/jwt.strategy";
+import { RolesGuard } from "./auth/guards/role.guard";
+import { APP_GUARD } from "@nestjs/core";
 
 @Module({
   imports: [
@@ -33,6 +35,17 @@ import { JwtStrategy } from "./auth/startegy/jwt.strategy";
     UsersModule,
     ReviewsModule,
   ],
-  providers: [JwtStrategy],
+  providers: [
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtStrategy,
+    // },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
+    // },
+    JwtStrategy,
+    // RolesGuard,
+  ],
 })
 export class AppModule {}

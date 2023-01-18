@@ -1,8 +1,12 @@
 import { Response } from "express";
+import { Request } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { User } from "src/users/entities/user.entity";
 import { UsersService } from "src/users/users.service";
+import { RolesGuard } from "src/auth/guards/role.guard";
 import { UpdateUserDto } from "src/users/dto/update-user.dto";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { Role, Roles } from "src/auth/decorators/role.decorator";
 import {
   Controller,
   Get,
@@ -15,12 +19,10 @@ import {
   HttpStatus,
   UseGuards,
 } from "@nestjs/common";
-import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
-import { Request } from "@nestjs/common";
 
 @Controller("users")
 @ApiTags("Users")
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -31,6 +33,7 @@ export class UsersController {
   }
 
   @Get(":id")
+  @Roles(Role.Admin, Role.User)
   async findOne(@Request() req: any, @Param("id", new ParseUUIDPipe()) id: string): Promise<User> {
     return await this.usersService.findOne(id);
   }

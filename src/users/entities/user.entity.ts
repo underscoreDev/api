@@ -4,6 +4,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import BaseModel from "src/entities/baseModel.entity";
 import { Review } from "src/reviews/entities/reviews.entity";
 import { Column, Entity, OneToMany, BeforeInsert } from "typeorm";
+import { Role } from "src/auth/decorators/role.decorator";
 
 @Entity({ name: "users" })
 export class User extends BaseModel {
@@ -27,6 +28,10 @@ export class User extends BaseModel {
   @Column({ default: false })
   @ApiProperty()
   isEmailVerified: boolean;
+
+  @Column({ default: Role.User })
+  @ApiProperty()
+  role: Role;
 
   /**
    * Relationships
