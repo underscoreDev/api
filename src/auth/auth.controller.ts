@@ -16,6 +16,7 @@ import {
   ClassSerializerInterceptor,
 } from "@nestjs/common";
 import { StandardResponse } from "./utils/responseManager.utils";
+import { Param } from "@nestjs/common/decorators";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -35,13 +36,14 @@ export class AuthController {
   @HttpCode(200)
   async login(
     @Request() req: ERequest & { user: User },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @Body() _loginDto: LoginDto,
   ): Promise<{ token: string; status: string }> {
     return await this.authService.login(req.user);
   }
 
-  @Post()
-  async confirmEmail(@Request() req: ERequest & { user: User }, @Body() loginDto: LoginDto) {
-    return this.authService.confirmEmail(req.user);
+  @Post("verify-email/:token")
+  async confirmEmail(@Param("token") token: string): Promise<StandardResponse<User>> {
+    return this.authService.confirmEmail(token);
   }
 }
