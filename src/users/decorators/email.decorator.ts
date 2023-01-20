@@ -1,3 +1,4 @@
+import { User } from "src/users/entities/user.entity";
 import {
   registerDecorator,
   ValidationOptions,
@@ -5,11 +6,11 @@ import {
   ValidatorConstraintInterface,
   ValidationArguments,
 } from "class-validator";
-import { User } from "src/users/entities/user.entity";
 
 @ValidatorConstraint({ async: true })
 export class IsEmailAlreadyExistConstraint implements ValidatorConstraintInterface {
   validate(email: any, args: ValidationArguments) {
+    // @ts-ignore
     return User.findOneBy({ email }).then((user) => {
       if (user) return false;
       return true;

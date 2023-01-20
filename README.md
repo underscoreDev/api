@@ -2,11 +2,11 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
-  <p align="center">Basic CRUD API with nestjs</p>
+  <p align="center">Hackathon Starter Kit with nestjs</p>
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Building a NestJs Backend API ? Why start from scratch ? Use this Starter Kit. Comes with Authentication, Authorization out of the box.
 
 ## Installation
 

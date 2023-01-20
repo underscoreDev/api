@@ -10,6 +10,7 @@ import { User } from "src/users/entities/user.entity";
 @ValidatorConstraint({ async: true })
 export class IsPhoneNumberAlreadyExistConstraint implements ValidatorConstraintInterface {
   validate(phoneNumber: any, args: ValidationArguments) {
+    // @ts-ignore
     return User.findOneBy({ phoneNumber }).then((phoneNumber) => {
       if (phoneNumber) return false;
       return true;

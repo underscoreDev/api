@@ -1,11 +1,11 @@
 import { Response } from "express";
+import { ApiTags } from "@nestjs/swagger";
 import { HttpStatus } from "@nestjs/common/enums";
 import { ReviewsService } from "src/reviews/reviews.service";
 import { Review } from "src/reviews/entities/reviews.entity";
-import { Controller, Get, Res, Body, Post, UseGuards } from "@nestjs/common";
-import { CreateReviewDto } from "src/reviews/dto/create-review.dto";
-import { ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { CreateReviewDto } from "src/reviews/dto/create-review.dto";
+import { Controller, Get, Res, Body, Post, UseGuards } from "@nestjs/common";
 
 @Controller("reviews")
 @UseGuards(JwtAuthGuard)

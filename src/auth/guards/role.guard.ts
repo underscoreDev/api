@@ -1,6 +1,6 @@
 import { Reflector } from "@nestjs/core";
 import { ROLES_KEY, Role } from "src/auth/decorators/role.decorator";
-import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
+import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from "@nestjs/common";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -17,6 +17,15 @@ export class RolesGuard implements CanActivate {
     }
 
     const { user } = context.switchToHttp().getRequest();
-    return requiredRoles.some((r) => user.role?.includes(r));
+
+    const canPass = requiredRoles.some((r) => user.role?.includes(r));
+
+    if (canPass) {
+      return true;
+    } else {
+      throw new ForbiddenException(
+        "Your Rank isn't high enough to access this resource, Ask your boss for promotion",
+      );
+    }
   }
 }
