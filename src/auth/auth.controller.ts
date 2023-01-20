@@ -37,4 +37,9 @@ export class AuthController {
   ): Promise<{ token: string; status: string }> {
     return await this.authService.login(req.user);
   }
+
+  @Post()
+  async confirmEmail(@Request() req: ERequest & { user: User }, @Body() loginDto: LoginDto) {
+    return this.authService.confirmEmail(req.user);
+  }
 }

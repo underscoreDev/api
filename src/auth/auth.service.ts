@@ -26,6 +26,10 @@ export class AuthService {
     return { status: "Login Success", token };
   }
 
+  async confirmEmail(user: User) {
+    return user;
+  }
+
   async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.usersRepository.findOneBy({ email });
 

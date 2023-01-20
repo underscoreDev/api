@@ -1,3 +1,5 @@
+import moment from "moment";
+import crypto from "crypto";
 import * as bcrypt from "bcryptjs";
 import { IsEmail } from "class-validator";
 import { Exclude } from "class-transformer";
@@ -35,6 +37,22 @@ export class User extends BaseModel {
   @ApiProperty()
   role: Role;
 
+  @Column()
+  @Exclude()
+  static emailVerificationToken: string;
+
+  @Column()
+  @Exclude()
+  static emailVerificationTokenExpires: moment.Moment;
+
+  @Column()
+  @Exclude()
+  static passwordResetToken: string;
+
+  @Column()
+  @Exclude()
+  static passwordResetTokenExpires: moment.Moment;
+
   constructor(partial: Partial<User>) {
     super();
     Object.assign(this, partial);
@@ -62,5 +80,30 @@ export class User extends BaseModel {
 
   static async comparePasswords(inputedPassword: string, hashedPassword: string): Promise<boolean> {
     return await bcrypt.compare(inputedPassword, hashedPassword);
+  }
+
+  static async createEmailVErificationCode() {
+    const verificationToken = crypto.randomBytes(3).toString("hex");
+
+    this.emailVerificationToken = crypto
+      .createHash("sha256")
+      .update(verificationToken)
+      .digest("hex");
+
+    this.emailVerificationTokenExpires = moment().add(10, "minutes");
+
+    return verificationToken;
+  }
+
+  static async createPasswordResetToken() {
+    // create unencrypted reset token
+    const resetToken = crypto.randomBytes(3).toString("hex");
+
+    // create and save encrypted reset token to database
+    this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+    this.passwordResetTokenExpires = moment().add(10, "minutes");
+    // send the unencrypted reset token to users email
+    return resetToken;
   }
 }
