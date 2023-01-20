@@ -63,7 +63,7 @@ export const Email = class {
 
   readonly sendEmailVerificationCode = async (emailToken: string) => {
     const html = `
-           <h3>Welcome to Hackathon. Your NestJS Starter API KITs</h3>
+           <h3>Welcome to Hackathon. Your NestJS Starter API KIT</h3>
            <h1> ${emailToken} </h1> <span> is your Email Verification Code</span>
            <h4>Verification code is Valid for 10 minutes</h4>
     `;

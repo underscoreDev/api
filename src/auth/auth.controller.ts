@@ -15,6 +15,7 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
 } from "@nestjs/common";
+import { StandardResponse } from "./utils/responseManager.utils";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -23,8 +24,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post("register")
-  @ApiCreatedResponse({ description: "User successfully created.", type: User })
-  async register(@Body() createUserDto: CreateUserDto): Promise<User> {
+  @HttpCode(201)
+  @ApiCreatedResponse({ description: "Registration Successful", type: User })
+  async register(@Body() createUserDto: CreateUserDto): Promise<StandardResponse<User>> {
     return await this.authService.createUser(createUserDto);
   }
 

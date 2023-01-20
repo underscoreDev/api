@@ -6,6 +6,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/users/entities/user.entity";
 import { Injectable, HttpException } from "@nestjs/common";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
+import { ResponseManager, StandardResponse } from "./utils/responseManager.utils";
 
 @Injectable()
 export class AuthService {
@@ -14,8 +15,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const user = this.usersRepository.create(createUserDto);
+  async createUser(createUserDto: CreateUserDto): Promise<StandardResponse<User>> {
+    let user = this.usersRepository.create(createUserDto);
 
     const emailToken = await user.createEmailVErificationCode();
 
@@ -25,9 +26,13 @@ export class AuthService {
       throw new HttpException(`Couldn't send Email ${error}`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    await this.usersRepository.save(user);
+    user = await this.usersRepository.save(user);
 
-    return user;
+    return ResponseManager.StandardResponse(
+      "Registration Successful",
+      "Verification Code Sent to Email",
+      user,
+    );
   }
 
   async login(user: User): Promise<{ token: string; status: string }> {
