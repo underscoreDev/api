@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Exclude } from "class-transformer";
 import {
   BaseEntity,
   CreateDateColumn,
@@ -13,14 +14,14 @@ export default abstract class BaseModel extends BaseEntity {
   id: string;
 
   @CreateDateColumn()
-  @ApiProperty()
+  @Exclude()
   createdAt: Date;
 
   @UpdateDateColumn()
-  @ApiProperty()
+  @Exclude()
   updatedAt: Date;
 
   @DeleteDateColumn()
-  @ApiProperty()
+  @Exclude()
   deletedAt: Date;
 }
