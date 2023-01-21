@@ -2,14 +2,16 @@ import { Request as ERequest } from "express";
 import { AuthService } from "src/auth/auth.service";
 import { User } from "src/users/entities/user.entity";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
-import { EmailDto, LoginDto } from "src/users/dto/login.dto";
+import { ChangePasswordDto, EmailDto, LoginDto, ResetPasswordDto } from "src/users/dto/login.dto";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { StandardResponse } from "src/utils/responseManager.utils";
+import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import {
   Post,
   Body,
   Param,
+  Patch,
   Request,
   HttpCode,
   UseGuards,
@@ -64,5 +66,21 @@ export class AuthController {
   @Post("resend-forgot-password")
   async resendForgotPassword(@Body() email: EmailDto): Promise<StandardResponse<User>> {
     return this.authService.forgotPassword(email);
+  }
+
+  @HttpCode(200)
+  @Patch("reset-password")
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<StandardResponse<User>> {
+    return this.authService.resetPassword(resetPasswordDto);
+  }
+
+  @HttpCode(200)
+  @Patch("change-password")
+  @UseGuards(JwtAuthGuard)
+  async changePassword(
+    @Request() req: ERequest & { user: User },
+    @Body() changePasswordDto: ChangePasswordDto,
+  ): Promise<StandardResponse<User>> {
+    return this.authService.changePassword(req.user, changePasswordDto);
   }
 }

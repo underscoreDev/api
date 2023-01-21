@@ -3,12 +3,13 @@ import { JwtService } from "@nestjs/jwt";
 import { Email } from "src/utils/email.utils";
 import { HttpStatus } from "@nestjs/common/enums";
 import { InjectRepository } from "@nestjs/typeorm";
-import { EmailDto } from "src/users/dto/login.dto";
+import { EmailDto, ResetPasswordDto } from "src/users/dto/login.dto";
 import { User } from "src/users/entities/user.entity";
 import { MoreThanOrEqual, Repository } from "typeorm";
 import { Injectable, HttpException } from "@nestjs/common";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { ResponseManager, StandardResponse } from "src/utils/responseManager.utils";
+import { ChangePasswordDto } from "../users/dto/login.dto";
 
 @Injectable()
 export class AuthService {
@@ -111,6 +112,70 @@ export class AuthService {
 
     return ResponseManager.StandardResponse("success", "Password Reset Token sent to Email", user);
   }
+
+  // RESET PASSWORD
+  async resetPassword({ resetToken, password }: ResetPasswordDto) {
+    const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+    const user = await this.usersRepository.findOneBy({
+      passwordResetToken: hashedToken,
+      passwordResetTokenExpires: MoreThanOrEqual(new Date(Date.now())),
+    });
+
+    if (!user) {
+      throw new HttpException("User not found", 404);
+    }
+
+    user.password = password;
+
+    user.passwordResetToken = null;
+    user.passwordResetTokenExpires = null;
+
+    await user.save();
+
+    const token = await this.jwtService.signAsync({
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    });
+
+    return ResponseManager.StandardResponse("success", "Password has been Reset", user, token);
+  }
+
+  changePassword = async (
+    loggedInUser: User,
+    { oldPassword, newPassword, newPasswordConfirm }: ChangePasswordDto,
+  ) => {
+    // check if user exists
+    const user = await this.usersRepository.findOneBy({
+      id: loggedInUser.id,
+      email: loggedInUser.email,
+    });
+
+    if (!user) {
+      throw new HttpException("User not found", 404);
+    }
+
+    // check if posted current password is correct
+    const validPassword = await User.comparePasswords(oldPassword, user.password);
+    // return an error if anything is incorrect
+    if (!validPassword) {
+      throw new HttpException("Wrong Password", 400);
+    }
+
+    // if so, update password
+    user.password = newPassword;
+
+    await user.save();
+
+    const token = await this.jwtService.signAsync({
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    });
+
+    return ResponseManager.StandardResponse("success", "Password has been Reset", user, token);
+  };
 
   async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.usersRepository.findOneBy({ email });
