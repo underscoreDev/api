@@ -1,12 +1,12 @@
 import { Request as ERequest } from "express";
 import { AuthService } from "src/auth/auth.service";
 import { User } from "src/users/entities/user.entity";
+import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
-import { ChangePasswordDto, EmailDto, LoginDto, ResetPasswordDto } from "src/users/dto/login.dto";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { StandardResponse } from "src/utils/responseManager.utils";
-import { JwtAuthGuard } from "./guards/jwt-auth.guard";
+import { ChangePasswordDto, EmailDto, LoginDto, ResetPasswordDto } from "src/users/dto/login.dto";
 import {
   Post,
   Body,
