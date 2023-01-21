@@ -53,4 +53,16 @@ export class AuthController {
   async resendEmailVerificationCode(@Body() email: EmailDto): Promise<StandardResponse<User>> {
     return this.authService.resendEmailVerificationCode(email);
   }
+
+  @HttpCode(200)
+  @Post("forgot-password")
+  async forgotPassword(@Body() email: EmailDto): Promise<StandardResponse<User>> {
+    return this.authService.forgotPassword(email);
+  }
+
+  @HttpCode(200)
+  @Post("resend-forgot-password")
+  async resendForgotPassword(@Body() email: EmailDto): Promise<StandardResponse<User>> {
+    return this.authService.forgotPassword(email);
+  }
 }

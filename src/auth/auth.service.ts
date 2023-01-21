@@ -93,6 +93,25 @@ export class AuthService {
     return { status: "success", token };
   }
 
+  async forgotPassword({ email }: EmailDto) {
+    const user = await this.usersRepository.findOneBy({ email });
+    if (!user) {
+      throw new HttpException("User not found", 400);
+    }
+
+    const resetToken = await user.createPasswordResetToken();
+
+    await user.save();
+
+    try {
+      await new Email(user).passwordResetToken(resetToken);
+    } catch (error) {
+      throw new HttpException(`Couldn't send Email ${error}`, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return ResponseManager.StandardResponse("success", "Password Reset Token sent to Email", user);
+  }
+
   async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.usersRepository.findOneBy({ email });
 
