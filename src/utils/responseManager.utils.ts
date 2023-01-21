@@ -5,7 +5,7 @@ export class ResponseManager {
     status: string,
     message: string,
     data: T,
-    meta?: object,
+    meta?: object | string,
   ): StandardResponse<T> {
     return {
       status,
@@ -26,5 +26,5 @@ export class StandardResponse<T = any> {
   @ApiProperty()
   data: T;
 
-  meta?: object;
+  meta?: object | string;
 }

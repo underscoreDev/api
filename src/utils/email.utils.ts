@@ -70,35 +70,14 @@ export const Email = class {
 
     return await this.send(html, "Email Verification Code");
   };
-};
 
-/*
+  readonly passwordResetToken = async (resetToken: string) => {
+    const html = `
+           <h3>Reset Your Password</h3>
+           <h1> ${resetToken} </h1> <span> is your Password Reset Code</span>
+           <h4>Reset code is Valid for 10 minutes</h4>
+    `;
 
-export async function sendEmail(email: string, subject: string, url: string, code: string) {
-  const filePath = path.join(__dirname, "../utils/activation_email.html");
-  const source = fs.readFileSync(filePath, "utf-8").toString();
-  const template = handlebars.compile(source);
-  const replacements = { code };
-  const htmlToSend = template(replacements);
-  const transporter = nodemailer.createTransport({
-    host: "smtp.mailtrap.io",
-    port: 2525, // 587
-    secure: false,
-    auth: {
-      user: "fg7f6g7g67",
-      pass: "asds7ds7d6",
-    },
-  });
-  const mailOptions = {
-    from: "noreply@yourdomain.com",
-    to: email,
-    subject: subject,
-    text: url,
-    html: htmlToSend,
+    return await this.send(html, "Password Reset Code");
   };
-  const info = await transporter.sendMail(mailOptions);
-  console.log("Message sent: %s", info.messageId);
-  console.log("Preview URL: %s", "https://mailtrap.io/inboxes/test/messages/");
-}
-
-*/
+};
