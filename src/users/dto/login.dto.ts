@@ -17,3 +17,12 @@ export class LoginDto {
   @IsNotEmpty()
   password: string;
 }
+export class EmailDto {
+  @ApiProperty({
+    description: "Email address of the user",
+    example: "reachme@amitavroy.com",
+  })
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+}

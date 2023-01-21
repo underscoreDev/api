@@ -1,14 +1,14 @@
-import { MoreThanOrEqual, Raw, Repository } from "typeorm";
+import * as crypto from "crypto";
 import { JwtService } from "@nestjs/jwt";
-import { Email } from "./utils/email.utils";
+import { Email } from "src/utils/email.utils";
 import { HttpStatus } from "@nestjs/common/enums";
 import { InjectRepository } from "@nestjs/typeorm";
+import { EmailDto } from "src/users/dto/login.dto";
 import { User } from "src/users/entities/user.entity";
+import { MoreThanOrEqual, Repository } from "typeorm";
 import { Injectable, HttpException } from "@nestjs/common";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
-import { ResponseManager, StandardResponse } from "./utils/responseManager.utils";
-import * as crypto from "crypto";
-import { format } from "date-fns";
+import { ResponseManager, StandardResponse } from "src/utils/responseManager.utils";
 
 @Injectable()
 export class AuthService {
@@ -37,23 +37,17 @@ export class AuthService {
     );
   }
 
-  async login(user: User): Promise<{ token: string; status: string }> {
-    const token = await this.jwtService.signAsync({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    });
-    return { status: "Login Success", token };
-  }
-
   async confirmEmail(token: string): Promise<StandardResponse<User>> {
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
-    const user = await this.usersRepository.findOneByOrFail({
+    const user = await this.usersRepository.findOneBy({
       emailVerificationToken: hashedToken,
       emailVerificationTokenExpires: MoreThanOrEqual(new Date(Date.now())),
     });
-    console.log("user found");
+
+    if (!user) {
+      throw new HttpException("Token Invalid or Expired", 401);
+    }
 
     user.isEmailVerified = true;
     user.emailVerificationToken = null;
@@ -61,7 +55,42 @@ export class AuthService {
 
     await user.save();
 
-    return ResponseManager.StandardResponse("Successful", "Email Verified", user);
+    const jwt = await this.jwtService.signAsync({
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    });
+
+    return ResponseManager.StandardResponse("Successful", "Email Verified", user, jwt);
+  }
+
+  async resendEmailVerificationCode({ email }: EmailDto): Promise<StandardResponse<User>> {
+    const user = await this.usersRepository.findOneBy({ email, isEmailVerified: false });
+
+    if (!user) {
+      throw new HttpException("User doesn't exist or Email already Verified", 404);
+    }
+
+    const emailToken = await user.createEmailVErificationCode();
+
+    await user.save();
+
+    try {
+      await new Email(user).sendEmailVerificationCode(emailToken);
+    } catch (error) {
+      throw new HttpException(`Couldn't send Email ${error}`, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return ResponseManager.StandardResponse("success", "Verification Code ReSent to Email", user);
+  }
+
+  async login(user: User): Promise<{ token: string; status: string }> {
+    const token = await this.jwtService.signAsync({
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    });
+    return { status: "success", token };
   }
 
   async validateUser(email: string, password: string): Promise<User | null> {

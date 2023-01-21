@@ -1,22 +1,22 @@
 import { Request as ERequest } from "express";
-import { LoginDto } from "src/users/dto/login.dto";
 import { AuthService } from "src/auth/auth.service";
 import { User } from "src/users/entities/user.entity";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
-import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
+import { EmailDto, LoginDto } from "src/users/dto/login.dto";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
+import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
+import { StandardResponse } from "src/utils/responseManager.utils";
 import {
-  HttpCode,
-  Controller,
   Post,
   Body,
-  UseGuards,
+  Param,
   Request,
+  HttpCode,
+  UseGuards,
+  Controller,
   UseInterceptors,
   ClassSerializerInterceptor,
 } from "@nestjs/common";
-import { StandardResponse } from "./utils/responseManager.utils";
-import { Param } from "@nestjs/common/decorators";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -42,8 +42,15 @@ export class AuthController {
     return await this.authService.login(req.user);
   }
 
+  @HttpCode(200)
   @Post("verify-email/:token")
   async confirmEmail(@Param("token") token: string): Promise<StandardResponse<User>> {
     return this.authService.confirmEmail(token);
+  }
+
+  @HttpCode(200)
+  @Post("resend-email-verification-code")
+  async resendEmailVerificationCode(@Body() email: EmailDto): Promise<StandardResponse<User>> {
+    return this.authService.resendEmailVerificationCode(email);
   }
 }
