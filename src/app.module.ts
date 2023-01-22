@@ -6,9 +6,9 @@ import { ThrottlerModule } from "@nestjs/throttler";
 import { UsersModule } from "src/users/users.module";
 import { User } from "src/users/entities/user.entity";
 import { ReviewsModule } from "src/reviews/reviews.module";
-import { JwtStrategy } from "./auth/startegy/jwt.strategy";
+import { SessionEntity } from "src/entities/session.entity";
+import { JwtStrategy } from "src/auth/startegy/jwt.strategy";
 import { Review } from "src/reviews/entities/reviews.entity";
-import { SessionEntity } from "./entities/session.entity";
 
 @Module({
   imports: [

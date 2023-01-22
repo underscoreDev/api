@@ -1,6 +1,6 @@
-import { addMinutes } from "date-fns";
 import * as crypto from "crypto";
 import * as bcrypt from "bcryptjs";
+import { addMinutes } from "date-fns";
 import { IsEmail } from "class-validator";
 import { Exclude } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";

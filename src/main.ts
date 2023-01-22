@@ -9,11 +9,11 @@ import { AppModule } from "src/app.module";
 import * as compression from "compression";
 import * as cookieParser from "cookie-parser";
 import { ValidationPipe } from "@nestjs/common";
+import { TypeormStore } from "connect-typeorm/out";
+import { SessionEntity } from "src/entities/session.entity";
 import { NestFactory, NestApplication } from "@nestjs/core";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { GlobalErrorHandler } from "src/utils/all-exception-filter";
-import { TypeormStore } from "connect-typeorm/out";
-import { SessionEntity } from "./entities/session.entity";
 
 const bootstrap = async () => {
   const app = await NestFactory.create<NestApplication>(AppModule);

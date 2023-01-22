@@ -3,13 +3,13 @@ import { JwtService } from "@nestjs/jwt";
 import { Email } from "src/utils/email.utils";
 import { HttpStatus } from "@nestjs/common/enums";
 import { InjectRepository } from "@nestjs/typeorm";
-import { EmailDto, ResetPasswordDto } from "src/users/dto/login.dto";
 import { User } from "src/users/entities/user.entity";
 import { MoreThanOrEqual, Repository } from "typeorm";
 import { Injectable, HttpException } from "@nestjs/common";
+import { ChangePasswordDto } from "src/users/dto/login.dto";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
+import { EmailDto, ResetPasswordDto } from "src/users/dto/login.dto";
 import { ResponseManager, StandardResponse } from "src/utils/responseManager.utils";
-import { ChangePasswordDto } from "../users/dto/login.dto";
 
 @Injectable()
 export class AuthService {
