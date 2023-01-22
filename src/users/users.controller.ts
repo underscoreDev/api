@@ -5,6 +5,7 @@ import { UpdateUserDto } from "src/users/dto/update-user.dto";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { Role, Roles } from "src/auth/decorators/role.decorator";
 import { ClassSerializerInterceptor, Request, UseInterceptors } from "@nestjs/common";
+import { SessionGuard } from "../auth/guards/session.guard";
 import {
   Controller,
   Get,
@@ -18,7 +19,7 @@ import {
 
 @Controller("users")
 @ApiTags("Users")
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(SessionGuard || JwtAuthGuard, RolesGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

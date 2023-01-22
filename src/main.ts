@@ -1,6 +1,9 @@
+import "dotenv/config";
 import * as fs from "fs";
 import helmet from "helmet";
 import * as morgan from "morgan";
+import * as passport from "passport";
+import * as session from "express-session";
 import { AppModule } from "src/app.module";
 import * as compression from "compression";
 import * as cookieParser from "cookie-parser";
@@ -18,6 +21,18 @@ const bootstrap = async () => {
   app.use(cookieParser("cookies"));
   app.use(compression());
   app.use(helmet());
+
+  app.use(
+    session({
+      name: "hackathon session id",
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: true,
+      cookie: { maxAge: 60 * 60 * 24 * 7, httpOnly: true, sameSite: true },
+    }),
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   const config = new DocumentBuilder()
     .setTitle("NestJs Hackathon Kit")

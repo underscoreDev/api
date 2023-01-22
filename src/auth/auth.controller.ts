@@ -18,6 +18,7 @@ import {
   Controller,
   UseInterceptors,
   ClassSerializerInterceptor,
+  Session,
 } from "@nestjs/common";
 
 @ApiTags("Auth")
