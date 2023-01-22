@@ -8,6 +8,7 @@ import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { StandardResponse } from "src/utils/responseManager.utils";
 import { ChangePasswordDto, EmailDto, LoginDto, ResetPasswordDto } from "src/users/dto/login.dto";
 import {
+  Get,
   Post,
   Body,
   Param,
@@ -83,5 +84,12 @@ export class AuthController {
     @Body() changePasswordDto: ChangePasswordDto,
   ): Promise<StandardResponse<User>> {
     return this.authService.changePassword(req.user, changePasswordDto);
+  }
+
+  @HttpCode(200)
+  @Get("logout")
+  async logout(@Request() req) {
+    req.session.destroy();
+    return { status: "success", message: "Logged out successfully" };
   }
 }

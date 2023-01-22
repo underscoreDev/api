@@ -19,7 +19,7 @@ import {
 
 @Controller("users")
 @ApiTags("Users")
-@UseGuards(SessionGuard || JwtAuthGuard, RolesGuard)
+@UseGuards(SessionGuard || JwtAuthGuard, RolesGuard) // use one of either sessionGuard or JWTGuard depending on your preference
 @UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
