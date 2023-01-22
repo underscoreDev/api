@@ -8,6 +8,7 @@ import { User } from "src/users/entities/user.entity";
 import { ReviewsModule } from "src/reviews/reviews.module";
 import { JwtStrategy } from "./auth/startegy/jwt.strategy";
 import { Review } from "src/reviews/entities/reviews.entity";
+import { SessionEntity } from "./entities/session.entity";
 
 @Module({
   imports: [
@@ -19,13 +20,14 @@ import { Review } from "src/reviews/entities/reviews.entity";
     }),
 
     TypeOrmModule.forRoot({
+      name: "default",
       type: "mysql",
       host: "localhost",
       port: 3306,
       username: "root",
       password: process.env.LOCAL_DATABASE_PASSWORD,
       database: "nestjstest",
-      entities: [User, Review],
+      entities: [User, Review, SessionEntity],
       synchronize: true,
       logging: false,
     }),

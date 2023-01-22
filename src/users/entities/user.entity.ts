@@ -96,8 +96,6 @@ export class User extends BaseModel {
 
     this.emailVerificationTokenExpires = date;
 
-    console.log(this.emailVerificationToken);
-
     return verificationToken;
   }
 
