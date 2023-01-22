@@ -1,5 +1,5 @@
-import BaseModel from "src/entities/baseModel.entity";
 import { Column, Entity, ManyToOne } from "typeorm";
+import BaseModel from "src/entities/baseModel.entity";
 import { User } from "src/users/entities/user.entity";
 
 @Entity({ name: "reviews" })

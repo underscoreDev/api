@@ -1,6 +1,7 @@
 import { ApiTags } from "@nestjs/swagger";
 import { UsersService } from "src/users/users.service";
 import { RolesGuard } from "src/auth/guards/role.guard";
+import { SessionGuard } from "src/auth/guards/session.guard";
 import { UpdateUserDto } from "src/users/dto/update-user.dto";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { Role, Roles } from "src/auth/decorators/role.decorator";
@@ -18,7 +19,7 @@ import {
 
 @Controller("users")
 @ApiTags("Users")
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(SessionGuard || JwtAuthGuard, RolesGuard) // use one of either sessionGuard or JWTGuard depending on your preference
 @UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

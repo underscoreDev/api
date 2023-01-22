@@ -3,13 +3,13 @@ import { JwtService } from "@nestjs/jwt";
 import { Email } from "src/utils/email.utils";
 import { HttpStatus } from "@nestjs/common/enums";
 import { InjectRepository } from "@nestjs/typeorm";
-import { EmailDto, ResetPasswordDto } from "src/users/dto/login.dto";
 import { User } from "src/users/entities/user.entity";
 import { MoreThanOrEqual, Repository } from "typeorm";
 import { Injectable, HttpException } from "@nestjs/common";
+import { ChangePasswordDto } from "src/users/dto/login.dto";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
+import { EmailDto, ResetPasswordDto } from "src/users/dto/login.dto";
 import { ResponseManager, StandardResponse } from "src/utils/responseManager.utils";
-import { ChangePasswordDto } from "../users/dto/login.dto";
 
 @Injectable()
 export class AuthService {
@@ -123,7 +123,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new HttpException("User not found", 404);
+      throw new HttpException("User not found or Token expired", 404);
     }
 
     user.password = password;
@@ -142,10 +142,7 @@ export class AuthService {
     return ResponseManager.StandardResponse("success", "Password has been Reset", user, token);
   }
 
-  changePassword = async (
-    loggedInUser: User,
-    { oldPassword, newPassword, newPasswordConfirm }: ChangePasswordDto,
-  ) => {
+  async changePassword(loggedInUser: User, { oldPassword, newPassword }: ChangePasswordDto) {
     // check if user exists
     const user = await this.usersRepository.findOneBy({
       id: loggedInUser.id,
@@ -175,7 +172,7 @@ export class AuthService {
     });
 
     return ResponseManager.StandardResponse("success", "Password has been Reset", user, token);
-  };
+  }
 
   async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.usersRepository.findOneBy({ email });
