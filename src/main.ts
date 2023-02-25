@@ -15,7 +15,7 @@ import { GlobalErrorHandler } from "src/utils/all-exception-filter";
 
 const bootstrap = async () => {
   const app = await NestFactory.create<INestApplication>(AppModule);
-  const repo = await app.get(AppModule).getSessionEntity();
+  const sessionEntity = await app.get(AppModule).getSessionEntity();
 
   app.use(morgan("dev")); //change to combined in production
   app.enableCors({ credentials: true, origin: ["http://localhost:3000"] });
@@ -34,7 +34,7 @@ const bootstrap = async () => {
         cleanupLimit: 10,
         limitSubquery: false,
         ttl: 60 * 60 * 24 * 7,
-      }).connect(repo),
+      }).connect(sessionEntity),
     }),
   );
 
