@@ -3,12 +3,12 @@ import { ApiTags } from "@nestjs/swagger";
 import { HttpStatus } from "@nestjs/common/enums";
 import { ReviewsService } from "src/reviews/reviews.service";
 import { Review } from "src/reviews/entities/reviews.entity";
-import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { SessionGuard } from "src/auth/guards/session.guard";
 import { CreateReviewDto } from "src/reviews/dto/create-review.dto";
 import { Controller, Get, Res, Body, Post, UseGuards } from "@nestjs/common";
 
 @Controller("reviews")
-// @UseGuards(JwtAuthGuard)
+@UseGuards(SessionGuard)
 @ApiTags("Reviews")
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}

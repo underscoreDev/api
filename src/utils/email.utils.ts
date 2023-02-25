@@ -1,4 +1,3 @@
-import "dotenv/config";
 import * as nodemailer from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 

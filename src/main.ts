@@ -1,4 +1,3 @@
-import "dotenv/config";
 import * as fs from "fs";
 import helmet from "helmet";
 import * as morgan from "morgan";
