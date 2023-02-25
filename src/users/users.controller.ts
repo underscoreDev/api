@@ -15,11 +15,18 @@ import {
   Delete,
   ParseUUIDPipe,
   UseGuards,
+  Session,
 } from "@nestjs/common";
+import { Request as ERequest } from "express";
+import { User } from "./entities/user.entity";
+import session, { Session as ExpressSession } from "express-session";
+
+type UserSession = ExpressSession & Record<"user", any>;
 
 @Controller("users")
 @ApiTags("Users")
-@UseGuards(SessionGuard || JwtAuthGuard, RolesGuard) // use one of either sessionGuard or JWTGuard depending on your preference
+@UseGuards(SessionGuard, RolesGuard) // use one of either sessionGuard or JWTGuard depending on your preference
+// @UseGuards(SessionGuard || JwtAuthGuard, RolesGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -32,7 +39,13 @@ export class UsersController {
 
   @Get(":id")
   @Roles(Role.User, Role.Manager)
-  async findOne(@Request() req: any, @Param("id", new ParseUUIDPipe()) id: string) {
+  async findOne(
+    @Param("id", new ParseUUIDPipe()) id: string,
+    @Request() req: ERequest & { user: User },
+    @Session() session: UserSession,
+  ) {
+    console.log(req.user);
+    console.log(session);
     const user = await this.usersService.findOne(id);
     return { status: "success", data: user };
   }

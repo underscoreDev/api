@@ -78,7 +78,7 @@ export class User extends BaseModel {
    * @returns Promise<boolean>
    */
 
-  static async comparePasswords(inputedPassword: string, hashedPassword: string): Promise<boolean> {
+  async comparePasswords(inputedPassword: string, hashedPassword: string): Promise<boolean> {
     return await bcrypt.compare(inputedPassword, hashedPassword);
   }
 

@@ -2,19 +2,19 @@ import * as crypto from "crypto";
 import { JwtService } from "@nestjs/jwt";
 import { Email } from "src/utils/email.utils";
 import { HttpStatus } from "@nestjs/common/enums";
-import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/users/entities/user.entity";
 import { MoreThanOrEqual, Repository } from "typeorm";
-import { Injectable, HttpException } from "@nestjs/common";
+import { USER_REPOSITORY } from "src/users/user.provider";
 import { ChangePasswordDto } from "src/users/dto/login.dto";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
+import { Injectable, HttpException, Inject } from "@nestjs/common";
 import { EmailDto, ResetPasswordDto } from "src/users/dto/login.dto";
 import { ResponseManager, StandardResponse } from "src/utils/responseManager.utils";
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>,
+    @Inject(USER_REPOSITORY) private usersRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -85,13 +85,8 @@ export class AuthService {
     return ResponseManager.StandardResponse("success", "Verification Code ReSent to Email", user);
   }
 
-  async login(user: User): Promise<{ token: string; status: string }> {
-    const token = await this.jwtService.signAsync({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    });
-    return { status: "success", token };
+  async login(user: User): Promise<{ message: string; status: string }> {
+    return { status: "success", message: "Logged in successfully" };
   }
 
   async forgotPassword({ email }: EmailDto) {
@@ -154,7 +149,7 @@ export class AuthService {
     }
 
     // check if posted current password is correct
-    const validPassword = await User.comparePasswords(oldPassword, user.password);
+    const validPassword = await user.comparePasswords(oldPassword, user.password);
     // return an error if anything is incorrect
     if (!validPassword) {
       throw new HttpException("Wrong Password", 400);
@@ -177,7 +172,7 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.usersRepository.findOneBy({ email });
 
-    if (user && (await User.comparePasswords(password, user.password))) {
+    if (user && (await user.comparePasswords(password, user.password))) {
       return user;
     }
 

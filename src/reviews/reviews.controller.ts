@@ -8,7 +8,7 @@ import { CreateReviewDto } from "src/reviews/dto/create-review.dto";
 import { Controller, Get, Res, Body, Post, UseGuards } from "@nestjs/common";
 
 @Controller("reviews")
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @ApiTags("Reviews")
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}

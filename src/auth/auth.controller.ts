@@ -3,6 +3,7 @@ import { AuthService } from "src/auth/auth.service";
 import { User } from "src/users/entities/user.entity";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
+import session, { Session as ExpressSession } from "express-session";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { StandardResponse } from "src/utils/responseManager.utils";
@@ -19,6 +20,7 @@ import {
   Controller,
   UseInterceptors,
   ClassSerializerInterceptor,
+  Session,
 } from "@nestjs/common";
 
 @ApiTags("Auth")
@@ -39,9 +41,8 @@ export class AuthController {
   @HttpCode(200)
   async login(
     @Request() req: ERequest & { user: User },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    @Body() _loginDto: LoginDto,
-  ): Promise<{ token: string; status: string }> {
+    @Body() loginDto: LoginDto,
+  ): Promise<{ message: string; status: string }> {
     return await this.authService.login(req.user);
   }
 
