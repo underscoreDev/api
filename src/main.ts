@@ -28,11 +28,22 @@ const bootstrap = async () => {
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
-      cookie: { maxAge: 60 * 60 * 24 * 7, httpOnly: true, sameSite: true },
+      name: "Hackathon Session",
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+        httpOnly: true,
+        sameSite: true,
+        // secure: process.env.NODE_ENV === "production",
+      },
       store: new TypeormStore({
+        cookie: {
+          maxAge: 1000 * 60 * 60 * 24 * 7,
+          httpOnly: true,
+          sameSite: true,
+        },
         cleanupLimit: 10,
         limitSubquery: false,
-        ttl: 60 * 60 * 24 * 7,
+        ttl: 1000 * 60 * 60 * 24 * 7,
       }).connect(sessionEntity),
     }),
   );

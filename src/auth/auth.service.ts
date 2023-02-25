@@ -10,6 +10,7 @@ import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { Injectable, HttpException, Inject } from "@nestjs/common";
 import { EmailDto, ResetPasswordDto } from "src/users/dto/login.dto";
 import { ResponseManager, StandardResponse } from "src/utils/responseManager.utils";
+import { Session } from "express-session";
 
 @Injectable()
 export class AuthService {
@@ -38,7 +39,7 @@ export class AuthService {
     );
   }
 
-  async confirmEmail(token: string): Promise<StandardResponse<User>> {
+  async confirmEmail(token: string, session: Session): Promise<StandardResponse<User>> {
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
     const user = await this.usersRepository.findOneBy({
@@ -56,13 +57,15 @@ export class AuthService {
 
     await user.save();
 
-    const jwt = await this.jwtService.signAsync({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    });
+    this.regenerateSession(session);
 
-    return ResponseManager.StandardResponse("Successful", "Email Verified", user, jwt);
+    // const jwt = await this.jwtService.signAsync({
+    //   sub: user.id,
+    //   email: user.email,
+    //   role: user.role,
+    // });
+
+    return ResponseManager.StandardResponse("Successful", "Email Verified", user);
   }
 
   async resendEmailVerificationCode({ email }: EmailDto): Promise<StandardResponse<User>> {
@@ -109,7 +112,7 @@ export class AuthService {
   }
 
   // RESET PASSWORD
-  async resetPassword({ resetToken, password }: ResetPasswordDto) {
+  async resetPassword({ resetToken, password }: ResetPasswordDto, session: Session) {
     const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
 
     const user = await this.usersRepository.findOneBy({
@@ -128,16 +131,22 @@ export class AuthService {
 
     await user.save();
 
-    const token = await this.jwtService.signAsync({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    });
+    // const token = await this.jwtService.signAsync({
+    //   sub: user.id,
+    //   email: user.email,
+    //   role: user.role,
+    // });
 
-    return ResponseManager.StandardResponse("success", "Password has been Reset", user, token);
+    this.regenerateSession(session);
+
+    return ResponseManager.StandardResponse("success", "Password has been Reset", user);
   }
 
-  async changePassword(loggedInUser: User, { oldPassword, newPassword }: ChangePasswordDto) {
+  async changePassword(
+    loggedInUser: User,
+    { oldPassword, newPassword }: ChangePasswordDto,
+    session: Session,
+  ) {
     // check if user exists
     const user = await this.usersRepository.findOneBy({
       id: loggedInUser.id,
@@ -160,13 +169,15 @@ export class AuthService {
 
     await user.save();
 
-    const token = await this.jwtService.signAsync({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    });
+    this.regenerateSession(session);
 
-    return ResponseManager.StandardResponse("success", "Password has been Reset", user, token);
+    // const token = await this.jwtService.signAsync({
+    //   sub: user.id,
+    //   email: user.email,
+    //   role: user.role,
+    // });
+
+    return ResponseManager.StandardResponse("success", "Password has been Reset", user);
   }
 
   async validateUser(email: string, password: string): Promise<User | null> {
@@ -177,5 +188,11 @@ export class AuthService {
     }
 
     return null;
+  }
+  regenerateSession(session: Session): Session {
+    const sess = session.regenerate(
+      (err) => new HttpException(`Couldn't regenerate new session: ${err}}`, 500),
+    );
+    return sess;
   }
 }
