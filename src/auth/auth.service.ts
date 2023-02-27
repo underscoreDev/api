@@ -5,7 +5,6 @@ import { Email } from "src/utils/email.utils";
 import { HttpStatus } from "@nestjs/common/enums";
 import { User } from "src/users/entities/user.entity";
 import { MoreThanOrEqual, Repository } from "typeorm";
-import { USER_REPOSITORY } from "src/users/user.provider";
 import { ChangePasswordDto } from "src/users/dto/login.dto";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { Injectable, HttpException, Inject } from "@nestjs/common";
