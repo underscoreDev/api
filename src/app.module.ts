@@ -1,18 +1,14 @@
 import { DataSource } from "typeorm";
 import { Module } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
 import { ConfigModule } from "@nestjs/config";
+import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "src/auth/auth.module";
 import { ThrottlerModule } from "@nestjs/throttler";
-import { AuthService } from "src/auth/auth.service";
 import { UsersModule } from "src/users/users.module";
-import { userProvider } from "src/users/user.provider";
+import { User } from "src/users/entities/user.entity";
 import { ReviewsModule } from "src/reviews/reviews.module";
 import { SessionEntity } from "src/entities/session.entity";
-import { JwtStrategy } from "src/auth/startegy/jwt.strategy";
-import { DatabaseModule } from "src/database/database.module";
-import { LocalStrategy } from "src/auth/startegy/local.strategy";
-import { SessionSerializer } from "src/auth/serializers/session.serializers";
+import { Review } from "src/reviews/entities/reviews.entity";
 
 @Module({
   imports: [
@@ -20,18 +16,21 @@ import { SessionSerializer } from "src/auth/serializers/session.serializers";
 
     ThrottlerModule.forRoot({ ttl: 60, limit: 10 }),
 
-    AuthModule,
+    TypeOrmModule.forRoot({
+      type: "mysql",
+      host: "localhost",
+      port: 3306,
+      username: "root",
+      password: process.env.LOCAL_DATABASE_PASSWORD,
+      database: "nestjstest",
+      entities: [User, Review, SessionEntity],
+      synchronize: true,
+      logging: false,
+    }),
+
     UsersModule,
     ReviewsModule,
-    DatabaseModule,
-  ],
-  providers: [
-    ...userProvider,
-    JwtStrategy,
-    JwtService,
-    LocalStrategy,
-    SessionSerializer,
-    AuthService,
+    AuthModule,
   ],
 })
 export class AppModule {

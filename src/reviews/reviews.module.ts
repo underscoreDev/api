@@ -7,7 +7,7 @@ import { reviewProvider } from "./reviews.provider";
 
 @Module({
   controllers: [ReviewsController],
-  providers: [ReviewsService, ...reviewProvider],
-  // imports: [TypeOrmModule.forFeature([Review])],
+  providers: [ReviewsService],
+  imports: [TypeOrmModule.forFeature([Review])],
 })
 export class ReviewsModule {}

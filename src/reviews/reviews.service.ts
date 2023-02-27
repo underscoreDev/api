@@ -7,7 +7,7 @@ import { REVIEW_REPOSITORY } from "./reviews.provider";
 
 @Injectable()
 export class ReviewsService {
-  constructor(@Inject(REVIEW_REPOSITORY) private reviewsRepository: Repository<Review>) {}
+  constructor(@InjectRepository(Review) private reviewsRepository: Repository<Review>) {}
 
   async getAllReviews() {
     return await this.reviewsRepository.find({ relations: ["user"] });

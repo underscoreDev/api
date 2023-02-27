@@ -7,7 +7,7 @@ import { USER_REPOSITORY } from "./user.provider";
 
 @Injectable()
 export class UsersService {
-  constructor(@Inject(USER_REPOSITORY) private usersRepository: Repository<User>) {}
+  constructor(@InjectRepository(User) private usersRepository: Repository<User>) {}
 
   async findAll(): Promise<User[]> {
     return await this.usersRepository.find();

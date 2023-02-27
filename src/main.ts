@@ -15,6 +15,7 @@ import { GlobalErrorHandler } from "src/utils/all-exception-filter";
 const bootstrap = async () => {
   const app = await NestFactory.create<INestApplication>(AppModule);
   const sessionEntity = await app.get(AppModule).getSessionEntity();
+  const port = process.env.PORT || 8989;
 
   app.use(morgan("dev")); //change to combined in production
   app.enableCors({ credentials: true, origin: ["http://localhost:3000"] });
@@ -66,7 +67,7 @@ const bootstrap = async () => {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalFilters(new GlobalErrorHandler());
-  await app.listen(8989);
+  await app.listen(port);
 };
 
 bootstrap();

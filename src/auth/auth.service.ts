@@ -12,11 +12,12 @@ import { Injectable, HttpException, Inject } from "@nestjs/common";
 import { EmailDto, ResetPasswordDto } from "src/users/dto/login.dto";
 import { ResponseManager, StandardResponse } from "src/utils/responseManager.utils";
 import { Guard } from "src/utils/guard.utils";
+import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(USER_REPOSITORY) private usersRepository: Repository<User>,
+    @InjectRepository(User) private usersRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
 
