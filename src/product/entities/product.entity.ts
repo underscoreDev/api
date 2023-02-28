@@ -52,6 +52,6 @@ export class Product extends BaseModel {
   @ManyToOne(() => Category, { nullable: false, cascade: true, eager: true })
   category: Category;
 
-  @Column({ nullable: false })
-  subCategory: SubCategory;
+  @ManyToOne(() => SubCategory, { nullable: false, cascade: true })
+  subCategory: SubCategory[];
 }

@@ -10,6 +10,6 @@ export class SubCategory extends BaseModel {
   @Column({ nullable: false })
   description: string;
 
-  @ManyToOne(() => Category, { nullable: false, cascade: true, eager: true })
+  @ManyToOne(() => Category, { nullable: false, cascade: true })
   parentCategory: Category;
 }
