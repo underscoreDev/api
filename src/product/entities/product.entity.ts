@@ -1,6 +1,9 @@
 import BaseModel from "src/entities/baseModel.entity";
 import { Review } from "src/reviews/entities/reviews.entity";
-import { Entity, Column, OneToMany, JoinColumn } from "typeorm";
+import { Entity, Column, OneToMany, ManyToOne } from "typeorm";
+import { Brand } from "./brand.entity";
+import { SubCategory } from "./subCategory.entity";
+import { Category } from "src/product/entities/category.entity";
 
 @Entity({ name: "products" })
 export class Product extends BaseModel {
@@ -40,16 +43,15 @@ export class Product extends BaseModel {
   @Column({ nullable: false, default: 0 })
   averageRating: number;
 
-  @OneToMany(() => Review, (review) => review.product)
-  @JoinColumn()
+  @OneToMany(() => Review, (review) => review.product, { cascade: true })
   reviews: Review[];
 
-  //   @Column({ nullable: false })
-  //   Brand: Brand;
+  @ManyToOne(() => Brand, { nullable: false, cascade: true, eager: true })
+  brand: Brand;
 
-  //   @Column({ nullable: false })
-  //   category: Category;
+  @ManyToOne(() => Category, { nullable: false, cascade: true, eager: true })
+  category: Category;
 
-  //   @Column({ nullable: false })
-  //   subCategory: SubCategory;
+  @Column({ nullable: false })
+  subCategory: SubCategory;
 }

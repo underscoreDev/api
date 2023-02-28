@@ -11,6 +11,9 @@ import { ReviewsModule } from "src/reviews/reviews.module";
 import { SessionEntity } from "src/entities/session.entity";
 import { Review } from "src/reviews/entities/reviews.entity";
 import { Product } from "src/product/entities/product.entity";
+import { Brand } from "./product/entities/brand.entity";
+import { Category } from "./product/entities/category.entity";
+import { SubCategory } from "./product/entities/subCategory.entity";
 
 @Module({
   imports: [
@@ -25,7 +28,7 @@ import { Product } from "src/product/entities/product.entity";
       username: "root",
       password: process.env.LOCAL_DATABASE_PASSWORD,
       database: "nestjstest",
-      entities: [User, Review, Product, SessionEntity],
+      entities: [User, Review, Brand, SubCategory, Category, Product, SessionEntity],
       synchronize: true,
       logging: false,
     }),
