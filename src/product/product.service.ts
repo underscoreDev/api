@@ -1,11 +1,11 @@
+import { Like, Repository } from "typeorm";
 import { Injectable } from "@nestjs/common";
-import { CreateProductDto, ProductDto, UpdateProductDto } from "./dto/product.dto";
+import { Guard } from "src/utils/guard.utils";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Product } from "src/product/entities/product.entity";
-import { Like, Repository } from "typeorm";
-import { ResponseManager, StandardResponse } from "src/utils/responseManager.utils";
 import { QueryDto, paginateResponse } from "src/utils/pagination.utils";
-import { Guard } from "src/utils/guard.utils";
+import { ResponseManager, StandardResponse } from "src/utils/responseManager.utils";
+import { CreateProductDto, ProductDto, UpdateProductDto } from "src/product/dto/product.dto";
 
 @Injectable()
 export class ProductService {

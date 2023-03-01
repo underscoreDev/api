@@ -1,9 +1,9 @@
 import BaseModel from "src/entities/baseModel.entity";
+import { Brand } from "src/product/entities/brand.entity";
 import { Review } from "src/reviews/entities/reviews.entity";
-import { Entity, Column, OneToMany, ManyToOne, BeforeInsert } from "typeorm";
-import { Brand } from "./brand.entity";
-import { SubCategory } from "./subCategory.entity";
 import { Category } from "src/product/entities/category.entity";
+import { SubCategory } from "src/product/entities/subCategory.entity";
+import { Entity, Column, OneToMany, ManyToOne, BeforeInsert } from "typeorm";
 
 @Entity()
 export class Product extends BaseModel {

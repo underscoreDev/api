@@ -1,3 +1,17 @@
+import { SessionGuard } from "src/auth/guards/session.guard";
+import { ProductService } from "src/product/product.service";
+import { Product } from "src/product/entities/product.entity";
+import { Paginate, QueryDto } from "src/utils/pagination.utils";
+import { Role, Roles } from "src/auth/decorators/role.decorator";
+import { StandardResponse } from "src/utils/responseManager.utils";
+import { CreateProductDto, UpdateProductDto, ProductDto } from "src/product/dto/product.dto";
+import {
+  ApiTags,
+  ApiCreatedResponse,
+  ApiBody,
+  ApiOkResponse,
+  ApiNoContentResponse,
+} from "@nestjs/swagger";
 import {
   Controller,
   Get,
@@ -11,23 +25,9 @@ import {
   Query,
   ParseUUIDPipe,
 } from "@nestjs/common";
-import { ProductService } from "./product.service";
-import { CreateProductDto, UpdateProductDto, ProductDto } from "./dto/product.dto";
-import {
-  ApiTags,
-  ApiCreatedResponse,
-  ApiBody,
-  ApiOkResponse,
-  ApiNoContentResponse,
-} from "@nestjs/swagger";
-import { StandardResponse } from "src/utils/responseManager.utils";
-import { SessionGuard } from "src/auth/guards/session.guard";
-import { Role, Roles } from "src/auth/decorators/role.decorator";
-import { Product } from "src/product/entities/product.entity";
-import { Paginate, QueryDto } from "src/utils/pagination.utils";
 
 @Controller("product")
-@ApiTags("product")
+@ApiTags("Product")
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
