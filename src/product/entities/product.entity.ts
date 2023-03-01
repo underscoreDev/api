@@ -1,6 +1,6 @@
 import BaseModel from "src/entities/baseModel.entity";
 import { Review } from "src/reviews/entities/reviews.entity";
-import { Entity, Column, OneToMany, ManyToOne } from "typeorm";
+import { Entity, Column, OneToMany, ManyToOne, BeforeInsert } from "typeorm";
 import { Brand } from "./brand.entity";
 import { SubCategory } from "./subCategory.entity";
 import { Category } from "src/product/entities/category.entity";
@@ -13,7 +13,7 @@ export class Product extends BaseModel {
   @Column({ nullable: false })
   name: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   slug: string;
 
   @Column({ nullable: false, type: "text" })
@@ -43,6 +43,9 @@ export class Product extends BaseModel {
   @Column({ nullable: false, default: 0 })
   averageRating: number;
 
+  @Column({ nullable: false, default: 0 })
+  noOfRatings: number;
+
   @OneToMany(() => Review, (review) => review.product)
   reviews: Review[];
 
@@ -54,4 +57,9 @@ export class Product extends BaseModel {
 
   @ManyToOne(() => SubCategory, { nullable: false, eager: true })
   subCategory: SubCategory;
+
+  @BeforeInsert()
+  async createProductSlug() {
+    this.slug = this.name.toLowerCase().split(" ").join("-");
+  }
 }
