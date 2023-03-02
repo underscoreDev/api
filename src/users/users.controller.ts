@@ -1,4 +1,4 @@
-import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
+import { ApiNoContentResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { UsersService } from "src/users/users.service";
 import { RolesGuard } from "src/auth/guards/role.guard";
 import { SessionGuard } from "src/auth/guards/session.guard";
@@ -42,23 +42,30 @@ export class UsersController {
 
   @Get(":id")
   @Roles(Role.Admin, Role.Manager)
+  @ApiOkResponse({ description: "user updated successfully", type: User })
   async findOne(@Param("id", ParseUUIDPipe) id: string): Promise<StandardResponse<User>> {
     return await this.usersService.findOne(id);
   }
 
   @Get("me")
+  @ApiOkResponse({ description: "user retrieved successfully", type: User })
   async findMe(@Session() session: UserSession): Promise<StandardResponse<User>> {
     console.log(session);
     return await this.usersService.findOne(session.user.id);
   }
 
   @Patch(":id")
+  @ApiOkResponse({ description: "user updated successfully", type: User })
   update(@Param("id", new ParseUUIDPipe()) id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(":id")
   @Roles(Role.Admin)
+  @ApiNoContentResponse({
+    description: "Review deleted successfully",
+    type: StandardResponse<null>,
+  })
   remove(@Param("id", new ParseUUIDPipe()) id: string) {
     return this.usersService.remove(id);
   }

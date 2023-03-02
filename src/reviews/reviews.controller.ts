@@ -70,8 +70,7 @@ export class ReviewsController {
   }
 
   @Delete(":id")
-  @UseGuards(SessionGuard)
-  @Roles(Role.Admin, Role.Manager)
+  @Roles(Role.Admin)
   @ApiNoContentResponse({
     description: "Review deleted successfully",
     type: StandardResponse<null>,
