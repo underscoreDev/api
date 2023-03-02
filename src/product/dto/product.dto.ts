@@ -37,7 +37,12 @@ export class ProductDto {
   @ApiProperty()
   coverImage: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: {
+      image1: "https://dog-image-1.jpg",
+      image2: "https://dog-image-2.jpg",
+    },
+  })
   imageGallery: JSON;
 
   @ApiProperty({
@@ -98,7 +103,12 @@ export class CreateProductDto {
   @IsNotEmpty()
   coverImage: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: {
+      image1: "https://dog-image-1.jpg",
+      image2: "https://dog-image-2.jpg",
+    },
+  })
   @IsNotEmptyObject()
   imageGallery: JSON;
 

@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { PartialType } from "@nestjs/mapped-types";
 import { User } from "src/users/entities/user.entity";
-import { Product } from "src/product/entities/product.entity";
+import { ProductDto } from "src/product/dto/product.dto";
 import { IsNotEmpty, IsNumber, Max, Min, IsString } from "class-validator";
 
 export class CreateReviewDto {
@@ -48,7 +48,7 @@ export class ReviewDto {
   user: User;
 
   @ApiProperty()
-  product: Product;
+  product: ProductDto;
 }
 
 export class UpdateReviewsDto extends PartialType(CreateReviewDto) {}
