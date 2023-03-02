@@ -1,10 +1,14 @@
-import { ApiNoContentResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
+import { User } from "src/users/entities/user.entity";
+import { QueryDto } from "src/utils/pagination.utils";
 import { UsersService } from "src/users/users.service";
 import { RolesGuard } from "src/auth/guards/role.guard";
+import { Session as ExpressSession } from "express-session";
 import { SessionGuard } from "src/auth/guards/session.guard";
 import { UpdateUserDto } from "src/users/dto/update-user.dto";
 import { Role, Roles } from "src/auth/decorators/role.decorator";
-import { ClassSerializerInterceptor, Request, UseInterceptors } from "@nestjs/common";
+import { StandardResponse } from "src/utils/responseManager.utils";
+import { ClassSerializerInterceptor, UseInterceptors } from "@nestjs/common";
+import { ApiNoContentResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import {
   Controller,
   Get,
@@ -17,11 +21,6 @@ import {
   Session,
   Query,
 } from "@nestjs/common";
-import { Request as ERequest } from "express";
-import { User } from "src/users/entities/user.entity";
-import session, { Session as ExpressSession } from "express-session";
-import { StandardResponse } from "src/utils/responseManager.utils";
-import { QueryDto } from "src/utils/pagination.utils";
 
 export type UserSession = ExpressSession & Record<"user", any>;
 
