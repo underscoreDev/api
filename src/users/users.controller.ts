@@ -21,7 +21,7 @@ import { Request as ERequest } from "express";
 import { User } from "./entities/user.entity";
 import session, { Session as ExpressSession } from "express-session";
 
-type UserSession = ExpressSession & Record<"user", any>;
+export type UserSession = ExpressSession & Record<"user", any>;
 
 @Controller("users")
 @ApiTags("Users")

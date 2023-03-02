@@ -1,11 +1,35 @@
 import { Response } from "express";
-import { ApiTags } from "@nestjs/swagger";
-import { HttpStatus } from "@nestjs/common/enums";
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiOkResponse,
+  ApiTags,
+} from "@nestjs/swagger";
+import { HttpStatus } from "@nestjs/common";
 import { ReviewsService } from "src/reviews/reviews.service";
 import { Review } from "src/reviews/entities/reviews.entity";
 import { SessionGuard } from "src/auth/guards/session.guard";
-import { CreateReviewDto } from "src/reviews/dto/create-review.dto";
-import { Controller, Get, Res, Body, Post, UseGuards } from "@nestjs/common";
+import { CreateReviewDto, ReviewDto, UpdateReviewsDto } from "src/reviews/dto/review.dto";
+import {
+  Controller,
+  Get,
+  Res,
+  Body,
+  Post,
+  HttpCode,
+  Patch,
+  Delete,
+  ParseUUIDPipe,
+  Param,
+  UseGuards,
+  Query,
+  Session,
+} from "@nestjs/common";
+import { Role, Roles } from "src/auth/decorators/role.decorator";
+import { StandardResponse } from "src/utils/responseManager.utils";
+import { Paginate, QueryDto } from "src/utils/pagination.utils";
+import { UserSession } from "src/users/users.controller";
 
 @Controller("reviews")
 @UseGuards(SessionGuard)
@@ -13,17 +37,49 @@ import { Controller, Get, Res, Body, Post, UseGuards } from "@nestjs/common";
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
-  @Get()
-  async getAllReviews(@Res() res: Response): Promise<Response<Review[]>> {
-    const reviews = await this.reviewsService.getAllReviews();
-    return res
-      .status(HttpStatus.OK)
-      .json({ status: "success", count: reviews.length, data: reviews });
+  @Post()
+  @HttpCode(201)
+  @Roles(Role.User)
+  @ApiBody({ description: "Create a new review", type: CreateReviewDto })
+  @ApiCreatedResponse({ description: "review created successfully", type: ReviewDto })
+  create(
+    @Session() session: UserSession,
+    @Body() createReviewDto: CreateReviewDto,
+  ): Promise<StandardResponse<ReviewDto>> {
+    return this.reviewsService.create(createReviewDto, session.user.id);
   }
 
-  @Post()
-  async createReview(@Body() review: CreateReviewDto, @Res() res: Response) {
-    const newReview = await this.reviewsService.createReview(review);
-    return res.status(HttpStatus.OK).json({ status: "success", data: newReview });
+  @Get()
+  @ApiOkResponse({ description: "Reviews retrieved successfully", type: [ReviewDto] })
+  async findAll(@Query() query: QueryDto): Promise<StandardResponse<Review[]>> {
+    return await this.reviewsService.findAll(query);
+  }
+
+  @Get(":id")
+  @ApiOkResponse({ description: "Review retrieved successfully", type: ReviewDto })
+  async findOne(@Param("id", ParseUUIDPipe) id: string): Promise<StandardResponse<ReviewDto>> {
+    return await this.reviewsService.findOne(id);
+  }
+
+  @Patch(":id")
+  @UseGuards(SessionGuard)
+  @Roles(Role.Admin, Role.Manager)
+  @ApiOkResponse({ description: "Review Updated successfully", type: ReviewDto })
+  update(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() updateReviewDto: UpdateReviewsDto,
+  ): Promise<StandardResponse<Review>> {
+    return this.reviewsService.update(id, updateReviewDto);
+  }
+
+  @Delete(":id")
+  @UseGuards(SessionGuard)
+  @Roles(Role.Admin, Role.Manager)
+  @ApiNoContentResponse({
+    description: "Review deleted successfully",
+    type: StandardResponse<null>,
+  })
+  remove(@Param("id", ParseUUIDPipe) id: string): Promise<StandardResponse<null>> {
+    return this.reviewsService.remove(id);
   }
 }
