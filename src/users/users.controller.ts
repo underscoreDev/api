@@ -1,9 +1,8 @@
-import { ApiTags } from "@nestjs/swagger";
+import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { UsersService } from "src/users/users.service";
 import { RolesGuard } from "src/auth/guards/role.guard";
 import { SessionGuard } from "src/auth/guards/session.guard";
 import { UpdateUserDto } from "src/users/dto/update-user.dto";
-import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { Role, Roles } from "src/auth/decorators/role.decorator";
 import { ClassSerializerInterceptor, Request, UseInterceptors } from "@nestjs/common";
 import {
@@ -16,10 +15,13 @@ import {
   ParseUUIDPipe,
   UseGuards,
   Session,
+  Query,
 } from "@nestjs/common";
 import { Request as ERequest } from "express";
-import { User } from "./entities/user.entity";
+import { User } from "src/users/entities/user.entity";
 import session, { Session as ExpressSession } from "express-session";
+import { StandardResponse } from "src/utils/responseManager.utils";
+import { QueryDto } from "src/utils/pagination.utils";
 
 export type UserSession = ExpressSession & Record<"user", any>;
 
@@ -32,22 +34,22 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  async findAll() {
-    const users = await this.usersService.findAll();
-    return { status: "success", count: users.length, data: users };
+  @Roles(Role.Admin, Role.Manager)
+  @ApiOkResponse({ description: "Users retrieved successfully", type: [User] })
+  async findAll(@Query() query: QueryDto): Promise<StandardResponse<User[]>> {
+    return await this.usersService.findAll(query);
   }
 
   @Get(":id")
-  @Roles(Role.User, Role.Manager)
-  async findOne(
-    @Param("id", new ParseUUIDPipe()) id: string,
-    @Request() req: ERequest & { user: User },
-    @Session() session: UserSession,
-  ) {
-    console.log(req.user);
+  @Roles(Role.Admin, Role.Manager)
+  async findOne(@Param("id", ParseUUIDPipe) id: string): Promise<StandardResponse<User>> {
+    return await this.usersService.findOne(id);
+  }
+
+  @Get("me")
+  async findMe(@Session() session: UserSession): Promise<StandardResponse<User>> {
     console.log(session);
-    const user = await this.usersService.findOne(id);
-    return { status: "success", data: user };
+    return await this.usersService.findOne(session.user.id);
   }
 
   @Patch(":id")
@@ -56,6 +58,7 @@ export class UsersController {
   }
 
   @Delete(":id")
+  @Roles(Role.Admin)
   remove(@Param("id", new ParseUUIDPipe()) id: string) {
     return this.usersService.remove(id);
   }

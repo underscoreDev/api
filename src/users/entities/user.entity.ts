@@ -11,20 +11,24 @@ import { Column, Entity, OneToMany, BeforeInsert } from "typeorm";
 
 @Entity()
 export class User extends BaseModel {
-  @Column()
+  @Column({ nullable: false })
   @ApiProperty()
   name: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: false })
   @IsEmail()
   @ApiProperty()
   email: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: false })
   @ApiProperty()
   phoneNumber: string;
 
-  @Column()
+  @Column({ nullable: true })
+  @ApiProperty()
+  photo: string;
+
+  @Column({ nullable: false })
   @ApiProperty()
   @Exclude()
   password: string;
