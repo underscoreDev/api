@@ -3,7 +3,7 @@ import { PartialType } from "@nestjs/swagger";
 import { Brand } from "src/brand/entities/brand.entity";
 import { Review } from "src/reviews/entities/reviews.entity";
 import { Category } from "src/category/entities/category.entity";
-import { SubCategory } from "src/product/entities/subCategory.entity";
+import { SubCategory } from "src/subCategory/entities/subCategory.entity";
 import { IsNotEmpty, IsString, IsNumber, IsNotEmptyObject } from "class-validator";
 
 export class ProductDto {

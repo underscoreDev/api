@@ -34,7 +34,10 @@ export class CategoryService {
   }
 
   async findOne(id: string): Promise<StandardResponse<Category>> {
-    const category = await this.categoryRepository.findOneBy({ id });
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+      relations: { childrenCategories: true },
+    });
 
     Guard.AgainstNotFound(category, "category");
 

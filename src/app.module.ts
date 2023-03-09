@@ -15,7 +15,8 @@ import { Review } from "src/reviews/entities/reviews.entity";
 import { Product } from "src/product/entities/product.entity";
 import { CategoryModule } from "src/category/category.module";
 import { Category } from "src/category/entities/category.entity";
-import { SubCategory } from "src/product/entities/subCategory.entity";
+import { SubCategoryModule } from "src/subCategory/subCategory.module";
+import { SubCategory } from "src/subCategory/entities/subCategory.entity";
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { SubCategory } from "src/product/entities/subCategory.entity";
     ProductModule,
     BrandModule,
     CategoryModule,
+    SubCategoryModule,
   ],
 })
 export class AppModule {

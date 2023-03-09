@@ -2,7 +2,7 @@ import BaseModel from "src/entities/baseModel.entity";
 import { Brand } from "src/brand/entities/brand.entity";
 import { Review } from "src/reviews/entities/reviews.entity";
 import { Category } from "src/category/entities/category.entity";
-import { SubCategory } from "src/product/entities/subCategory.entity";
+import { SubCategory } from "src/subCategory/entities/subCategory.entity";
 import { Entity, Column, OneToMany, ManyToOne, BeforeInsert } from "typeorm";
 
 @Entity()

@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty } from "class-validator";
 import { ApiProperty, PartialType } from "@nestjs/swagger";
-import { SubCategory } from "src/product/entities/subCategory.entity";
+import { SubCategory } from "src/subCategory/entities/subCategory.entity";
 
 export class CategoryDto {
   @ApiProperty()
