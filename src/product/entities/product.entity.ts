@@ -34,10 +34,10 @@ export class Product extends BaseModel {
   @Column({ nullable: false })
   coverImage: string;
 
-  @Column({ nullable: false, type: "json" })
+  @Column({ nullable: false, type: "jsonb" })
   imageGallery: JSON;
 
-  @Column({ nullable: false, type: "json" })
+  @Column({ nullable: false, type: "jsonb" })
   metaData: JSON;
 
   @Column({ nullable: false, default: 0 })

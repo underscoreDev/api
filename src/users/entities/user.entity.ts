@@ -7,7 +7,8 @@ import { ApiProperty } from "@nestjs/swagger";
 import BaseModel from "src/entities/baseModel.entity";
 import { Role } from "src/auth/decorators/role.decorator";
 import { Review } from "src/reviews/entities/reviews.entity";
-import { Column, Entity, OneToMany, BeforeInsert } from "typeorm";
+import { Column, Entity, OneToMany, BeforeInsert, OneToOne } from "typeorm";
+import { Order } from "../../orders/entities/order.entity";
 
 @Entity()
 export class User extends BaseModel {
@@ -64,8 +65,11 @@ export class User extends BaseModel {
   /**
    * Relationships
    */
-  @OneToMany(() => Review, (review) => review.user)
+  @OneToMany(() => Review, (review: Review) => review.user)
   reviews: Review[];
+
+  @OneToMany(() => Order, (order: Order) => order.user)
+  orders: Order[];
 
   /**
    * Hooks
