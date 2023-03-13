@@ -9,6 +9,7 @@ import { BrandModule } from "src/brand/brand.module";
 import { User } from "src/users/entities/user.entity";
 import { Brand } from "src/brand/entities/brand.entity";
 import { ProductModule } from "./product/product.module";
+import { Order } from "src/orders/entities/order.entity";
 import { ReviewsModule } from "src/reviews/reviews.module";
 import { SessionEntity } from "src/entities/session.entity";
 import { Review } from "src/reviews/entities/reviews.entity";
@@ -30,7 +31,7 @@ import { SubCategory } from "src/subCategory/entities/subCategory.entity";
       username: "postgres",
       password: process.env.LOCAL_DATABASE_PASSWORD,
       database: "nestjstest",
-      entities: [User, Review, Brand, SubCategory, Category, Product, SessionEntity],
+      entities: [User, Review, Brand, SubCategory, Category, Product, Order, SessionEntity],
       synchronize: true,
       logging: false,
     }),

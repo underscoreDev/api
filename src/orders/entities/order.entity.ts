@@ -1,7 +1,7 @@
-import { Column, Entity, ManyToOne } from "typeorm";
 import BaseModel from "src/entities/baseModel.entity";
 import { User } from "src/users/entities/user.entity";
 import { Product } from "src/product/entities/product.entity";
+import { Column, Entity, ManyToOne, ManyToMany, JoinTable } from "typeorm";
 
 @Entity()
 export class Order extends BaseModel {
@@ -17,7 +17,8 @@ export class Order extends BaseModel {
   @Column({ nullable: false })
   grandTotal: number;
 
-  @ManyToOne(() => Product)
+  @ManyToMany(() => Product)
+  @JoinTable()
   products: Product[];
 
   @ManyToOne(() => User, (user) => user.orders, { nullable: false, eager: true })

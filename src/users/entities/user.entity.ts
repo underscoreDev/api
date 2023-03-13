@@ -5,10 +5,10 @@ import { IsEmail } from "class-validator";
 import { Exclude } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
 import BaseModel from "src/entities/baseModel.entity";
+import { Order } from "src/orders/entities/order.entity";
 import { Role } from "src/auth/decorators/role.decorator";
 import { Review } from "src/reviews/entities/reviews.entity";
-import { Column, Entity, OneToMany, BeforeInsert, OneToOne } from "typeorm";
-import { Order } from "../../orders/entities/order.entity";
+import { Column, Entity, OneToMany, BeforeInsert } from "typeorm";
 
 @Entity()
 export class User extends BaseModel {
