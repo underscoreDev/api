@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsString } from "class-validator";
 import { ApiProperty, PartialType } from "@nestjs/swagger";
+import { IsNotEmpty, IsString, IsUUID } from "class-validator";
 import { Category } from "src/category/entities/category.entity";
 
 export class SubCategoryDto {
@@ -28,8 +28,7 @@ export class CreateSubCategoryDto {
   description: string;
 
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
+  @IsUUID()
   parentCategoryId: string;
 }
 

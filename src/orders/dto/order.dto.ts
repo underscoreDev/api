@@ -1,7 +1,7 @@
 import { User } from "src/users/entities/user.entity";
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { Product } from "src/product/entities/product.entity";
-import { IsArray, IsNotEmpty, IsObject, IsUUID } from "class-validator";
+import { IsArray, IsNotEmpty, IsUUID, IsNotEmptyObject, IsNumber } from "class-validator";
 
 export class CartItem {
   @ApiProperty()
@@ -9,6 +9,15 @@ export class CartItem {
 
   @ApiProperty()
   product: Product;
+}
+export class CreateCartItem {
+  @ApiProperty()
+  @IsNumber()
+  quantity: number;
+
+  @ApiProperty()
+  @IsUUID()
+  productId: string;
 }
 
 export class ShippingInfo {
@@ -40,7 +49,7 @@ export class OrderDto {
   @ApiProperty()
   user: User;
 
-  @ApiProperty()
+  @ApiProperty({ example: ShippingInfo })
   shippingInfo: ShippingInfo;
 
   @ApiProperty({ enum: OrderStatus, default: OrderStatus.placed })
@@ -55,7 +64,7 @@ export class OrderDto {
   @ApiProperty()
   grandTotal: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: [CartItem] })
   cartItems: CartItem[];
 }
 
@@ -67,10 +76,10 @@ export class CreateOrderDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsObject({ context: ShippingInfo })
+  @IsNotEmptyObject()
   shippingInfo: ShippingInfo;
 
-  @ApiProperty()
+  @ApiProperty({ example: [CartItem] })
   @IsNotEmpty()
   @IsArray()
   cartItems: CartItem[];

@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { PartialType } from "@nestjs/mapped-types";
 import { User } from "src/users/entities/user.entity";
 import { ProductDto } from "src/product/dto/product.dto";
-import { IsNotEmpty, IsNumber, Max, Min, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, Max, Min, IsString, IsUUID } from "class-validator";
 
 export class CreateReviewDto {
   @IsNotEmpty()
@@ -23,6 +23,7 @@ export class CreateReviewDto {
   rating: number;
 
   @ApiProperty()
+  @IsUUID()
   productId: string;
 }
 
