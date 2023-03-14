@@ -1,13 +1,50 @@
 import { User } from "src/users/entities/user.entity";
-import { ApiProperty } from "@nestjs/swagger";
-import { ProductDto } from "src/product/dto/product.dto";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
+import { Product } from "src/product/entities/product.entity";
+import { IsArray, IsNotEmpty, IsObject, IsUUID } from "class-validator";
+
+export class CartItem {
+  @ApiProperty()
+  quantity: number;
+
+  @ApiProperty()
+  product: Product;
+}
+
+export class ShippingInfo {
+  @ApiProperty()
+  address: string;
+
+  @ApiProperty()
+  city: string;
+
+  @ApiProperty()
+  country: string;
+
+  @ApiProperty()
+  zipCode: string;
+}
+
+export enum OrderStatus {
+  placed = "Placed",
+  cancelled = "Cancelled",
+  confirmed = "Confirmed",
+  shipped = "Shipped",
+  delivered = "Delivered",
+}
 
 export class OrderDto {
   @ApiProperty()
   id: string;
 
   @ApiProperty()
-  address: JSON;
+  user: User;
+
+  @ApiProperty()
+  shippingInfo: ShippingInfo;
+
+  @ApiProperty({ enum: OrderStatus, default: OrderStatus.placed })
+  orderStatus: OrderStatus;
 
   @ApiProperty()
   total: number;
@@ -19,19 +56,24 @@ export class OrderDto {
   grandTotal: number;
 
   @ApiProperty()
-  products: ProductDto[];
-
-  @ApiProperty()
-  user: User;
+  cartItems: CartItem[];
 }
 
 export class CreateOrderDto {
   @ApiProperty()
-  address: JSON;
-
-  @ApiProperty()
-  products: ProductDto[];
-
-  @ApiProperty()
+  @IsNotEmpty()
+  @IsUUID()
   userId: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsObject({ context: ShippingInfo })
+  shippingInfo: ShippingInfo;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsArray()
+  cartItems: CartItem[];
 }
+
+export class UpdateOrderDto extends PartialType<CreateOrderDto>(CreateOrderDto) {}
