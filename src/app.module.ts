@@ -7,9 +7,10 @@ import { ThrottlerModule } from "@nestjs/throttler";
 import { UsersModule } from "src/users/users.module";
 import { BrandModule } from "src/brand/brand.module";
 import { User } from "src/users/entities/user.entity";
+import { OrderModule } from "src/order/order.module";
 import { Brand } from "src/brand/entities/brand.entity";
-import { ProductModule } from "./product/product.module";
-import { Order } from "src/orders/entities/order.entity";
+import { Order } from "src/order/entities/order.entity";
+import { ProductModule } from "src/product/product.module";
 import { ReviewsModule } from "src/reviews/reviews.module";
 import { SessionEntity } from "src/entities/session.entity";
 import { Review } from "src/reviews/entities/reviews.entity";
@@ -43,6 +44,7 @@ import { SubCategory } from "src/subCategory/entities/subCategory.entity";
     BrandModule,
     CategoryModule,
     SubCategoryModule,
+    OrderModule,
   ],
 })
 export class AppModule {

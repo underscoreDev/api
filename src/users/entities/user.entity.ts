@@ -5,7 +5,7 @@ import { IsEmail } from "class-validator";
 import { Exclude } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
 import BaseModel from "src/entities/baseModel.entity";
-import { Order } from "src/orders/entities/order.entity";
+import { Order } from "src/order/entities/order.entity";
 import { Role } from "src/auth/decorators/role.decorator";
 import { Review } from "src/reviews/entities/reviews.entity";
 import { Column, Entity, OneToMany, BeforeInsert } from "typeorm";

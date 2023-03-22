@@ -70,18 +70,11 @@ export class OrderDto {
 
 export class CreateOrderDto {
   @ApiProperty()
-  @IsNotEmpty()
-  @IsUUID()
-  userId: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
   @IsNotEmptyObject()
   shippingInfo: ShippingInfo;
 
   @ApiProperty({ example: [CartItem] })
-  @IsNotEmpty()
-  @IsArray()
+  @IsArray({ context: CartItem })
   cartItems: CartItem[];
 }
 

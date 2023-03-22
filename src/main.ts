@@ -13,7 +13,7 @@ import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { GlobalErrorHandler } from "src/utils/all-exception-filter";
 
 const bootstrap = async () => {
-  const app = await NestFactory.create<INestApplication>(AppModule);
+  const app = await NestFactory.create<INestApplication>(AppModule, { logger: false });
   const sessionEntity = await app.get(AppModule).getSessionEntity();
   const port = process.env.PORT || 8989;
 
@@ -67,7 +67,7 @@ const bootstrap = async () => {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalFilters(new GlobalErrorHandler());
-  await app.listen(port);
+  await app.listen(port, () => console.log(`Server started on http://127.0.0.1:${port}`));
 };
 
 bootstrap();

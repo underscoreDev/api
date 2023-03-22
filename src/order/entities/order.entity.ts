@@ -1,7 +1,7 @@
 import BaseModel from "src/entities/baseModel.entity";
 import { User } from "src/users/entities/user.entity";
 import { BeforeInsert, Column, Entity, ManyToOne } from "typeorm";
-import { ShippingInfo, OrderStatus, CartItem } from "src/orders/dto/order.dto";
+import { ShippingInfo, OrderStatus, CartItem } from "src/order/dto/order.dto";
 
 @Entity()
 export class Order extends BaseModel {
@@ -27,7 +27,7 @@ export class Order extends BaseModel {
   user: User;
 
   @BeforeInsert()
-  async calcTotal() {
+  calcTotal() {
     const total = this.cartItems.reduce(
       (previousValue, currentValue) =>
         (previousValue += currentValue.quantity * currentValue.product.price),
