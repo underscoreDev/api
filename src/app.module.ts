@@ -42,9 +42,9 @@ import { SubCategory } from "src/subCategory/entities/subCategory.entity";
     ReviewsModule,
     ProductModule,
     BrandModule,
+    OrderModule,
     CategoryModule,
     SubCategoryModule,
-    OrderModule,
   ],
 })
 export class AppModule {

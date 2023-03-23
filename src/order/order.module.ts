@@ -1,11 +1,14 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { OrderService } from "src/order/order.service";
+import { User } from "src/users/entities/user.entity";
 import { Order } from "src/order/entities/order.entity";
 import { OrderController } from "src/order/order.controller";
+import { Product } from "src/product/entities/product.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order])],
-  //   providers: [OrderService],
+  providers: [OrderService],
   controllers: [OrderController],
+  imports: [TypeOrmModule.forFeature([Order, Product, User])],
 })
 export class OrderModule {}

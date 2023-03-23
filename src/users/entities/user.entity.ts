@@ -3,7 +3,6 @@ import * as bcrypt from "bcryptjs";
 import { addMinutes } from "date-fns";
 import { IsEmail } from "class-validator";
 import { Exclude } from "class-transformer";
-import { ApiProperty } from "@nestjs/swagger";
 import BaseModel from "src/entities/baseModel.entity";
 import { Order } from "src/order/entities/order.entity";
 import { Role } from "src/auth/decorators/role.decorator";
@@ -13,33 +12,26 @@ import { Column, Entity, OneToMany, BeforeInsert } from "typeorm";
 @Entity()
 export class User extends BaseModel {
   @Column({ nullable: false })
-  @ApiProperty()
   name: string;
 
   @Column({ unique: true, nullable: false })
   @IsEmail()
-  @ApiProperty()
   email: string;
 
   @Column({ unique: true, nullable: false })
-  @ApiProperty()
   phoneNumber: string;
 
   @Column({ nullable: true })
-  @ApiProperty()
   photo: string;
 
   @Column({ nullable: false })
-  @ApiProperty()
   @Exclude()
   password: string;
 
   @Column({ default: false })
-  @ApiProperty()
   isEmailVerified: boolean;
 
   @Column({ default: Role.User })
-  @ApiProperty()
   role: Role;
 
   @Column({ nullable: true })

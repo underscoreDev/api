@@ -13,7 +13,7 @@ import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { GlobalErrorHandler } from "src/utils/all-exception-filter";
 
 const bootstrap = async () => {
-  const app = await NestFactory.create<INestApplication>(AppModule, { logger: false });
+  const app = await NestFactory.create<INestApplication>(AppModule);
   const sessionEntity = await app.get(AppModule).getSessionEntity();
   const port = process.env.PORT || 8989;
 

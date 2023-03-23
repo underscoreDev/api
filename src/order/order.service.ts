@@ -1,24 +1,49 @@
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { Injectable } from "@nestjs/common";
 import { Guard } from "src/utils/guard.utils";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Order } from "src/order/entities/order.entity";
-import { CreateOrderDto, OrderDto, UpdateOrderDto } from "src/order/dto/order.dto";
+import { ICartItem, Order } from "src/order/entities/order.entity";
+import { CreateOrderDto, UpdateOrderDto, OrderDto } from "src/order/dto/order.dto";
 import { ResponseManager, StandardResponse } from "src/utils/responseManager.utils";
+import { Product } from "src/product/entities/product.entity";
+import { User } from "src/users/entities/user.entity";
 
 @Injectable()
 export class OrderService {
-  constructor(@InjectRepository(Order) private orderRepository: Repository<Order>) {}
+  constructor(
+    @InjectRepository(Order) private orderRepository: Repository<Order>,
+    @InjectRepository(Product) private productsRepository: Repository<Product>,
+    @InjectRepository(User) private userRepository: Repository<User>,
+  ) {}
 
-  async create(createOrderDto: CreateOrderDto): Promise<StandardResponse<OrderDto>> {
-    const newOrder = this.orderRepository.create(createOrderDto);
+  async create(createOrderDto: CreateOrderDto, userId: string): Promise<StandardResponse<any>> {
+    const user = await this.userRepository.findOneBy({ id: userId });
+    Guard.AgainstNotFound(user, "user");
+
+    const pIds = createOrderDto.cartItems.map((p) => p.productId);
+
+    const products = this.productsRepository.findBy({ id: In(pIds) });
+
+    const productWithQuantities: ICartItem[] = createOrderDto.cartItems.map((prod, index) => {
+      return {
+        product: products[index],
+        quantity: prod.quantity,
+      };
+    });
+
+    const newOrder = this.orderRepository.create({
+      shippingInfo: createOrderDto.shippingInfo,
+      user,
+      cartItems: productWithQuantities,
+    });
+
     await newOrder.save();
 
     return ResponseManager.StandardResponse({
       code: 201,
       status: "success",
       message: "order created successfully",
-      data: newOrder,
+      data: { pIds, products, productWithQuantities, newOrder },
     });
   }
 
@@ -33,7 +58,7 @@ export class OrderService {
     });
   }
 
-  async findOne(id: string): Promise<StandardResponse<Order>> {
+  async findOne(id: string): Promise<StandardResponse<any>> {
     const order = await this.orderRepository.findOne({
       where: { id },
       relations: { user: true },

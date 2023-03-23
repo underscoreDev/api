@@ -1,8 +1,15 @@
 import BaseModel from "src/entities/baseModel.entity";
 import { User } from "src/users/entities/user.entity";
-import { BeforeInsert, Column, Entity, ManyToOne } from "typeorm";
-import { ShippingInfo, OrderStatus, CartItem } from "src/order/dto/order.dto";
+import { Product } from "src/product/entities/product.entity";
+import { ShippingInfo, OrderStatus } from "src/order/dto/order.dto";
+import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, ManyToOne } from "typeorm";
+import { ProductDto } from "src/product/dto/product.dto";
 
+export interface ICartItem {
+  quantity: number;
+
+  product: ProductDto;
+}
 @Entity()
 export class Order extends BaseModel {
   @Column({ nullable: false, type: "jsonb" })
@@ -21,7 +28,7 @@ export class Order extends BaseModel {
   grandTotal: number;
 
   @Column({ type: "jsonb", nullable: false })
-  cartItems: CartItem[];
+  cartItems: ICartItem[];
 
   @ManyToOne(() => User, (user) => user.orders, { nullable: false, eager: true })
   user: User;

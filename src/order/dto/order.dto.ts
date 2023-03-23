@@ -1,15 +1,15 @@
-import { User } from "src/users/entities/user.entity";
+import { UserDto } from "src/users/dto/user.dto";
 import { ApiProperty, PartialType } from "@nestjs/swagger";
-import { Product } from "src/product/entities/product.entity";
-import { IsArray, IsNotEmpty, IsUUID, IsNotEmptyObject, IsNumber } from "class-validator";
+import { IsArray, IsUUID, IsNotEmptyObject, IsNumber } from "class-validator";
 
 export class CartItem {
   @ApiProperty()
   quantity: number;
 
   @ApiProperty()
-  product: Product;
+  productId: string;
 }
+
 export class CreateCartItem {
   @ApiProperty()
   @IsNumber()
@@ -47,7 +47,7 @@ export class OrderDto {
   id: string;
 
   @ApiProperty()
-  user: User;
+  user: UserDto;
 
   @ApiProperty({ example: ShippingInfo })
   shippingInfo: ShippingInfo;
