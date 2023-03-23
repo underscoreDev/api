@@ -5,6 +5,7 @@ import { Role, Roles } from "src/auth/decorators/role.decorator";
 import { StandardResponse } from "src/utils/responseManager.utils";
 import { CreateOrderDto, OrderDto, UpdateOrderDto } from "src/order/dto/order.dto";
 import { UserSession } from "src/users/users.controller";
+import { Session as ESession } from "express-session";
 import {
   ApiBody,
   ApiCreatedResponse,
@@ -38,9 +39,9 @@ export class OrderController {
   @ApiCreatedResponse({ description: "order created successfully", type: OrderDto })
   create(
     @Body() createOrderDto: CreateOrderDto,
-    @Session() session: UserSession,
+    @Session() { passport }: any,
   ): Promise<StandardResponse<OrderDto>> {
-    return this.orderService.create(createOrderDto, session.user.id);
+    return this.orderService.create(createOrderDto, passport.user.id);
   }
 
   @Get()

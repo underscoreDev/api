@@ -2,16 +2,16 @@ import * as crypto from "crypto";
 import { JwtService } from "@nestjs/jwt";
 import { Session } from "express-session";
 import { Email } from "src/utils/email.utils";
+import { Guard } from "src/utils/guard.utils";
 import { HttpStatus } from "@nestjs/common/enums";
+import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/users/entities/user.entity";
 import { MoreThanOrEqual, Repository } from "typeorm";
+import { Injectable, HttpException } from "@nestjs/common";
 import { ChangePasswordDto } from "src/users/dto/login.dto";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
-import { Injectable, HttpException, Inject } from "@nestjs/common";
 import { EmailDto, ResetPasswordDto } from "src/users/dto/login.dto";
 import { ResponseManager, StandardResponse } from "src/utils/responseManager.utils";
-import { Guard } from "src/utils/guard.utils";
-import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
 export class AuthService {

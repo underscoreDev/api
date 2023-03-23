@@ -1,9 +1,8 @@
 import BaseModel from "src/entities/baseModel.entity";
 import { User } from "src/users/entities/user.entity";
-import { Product } from "src/product/entities/product.entity";
-import { ShippingInfo, OrderStatus } from "src/order/dto/order.dto";
-import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, ManyToOne } from "typeorm";
 import { ProductDto } from "src/product/dto/product.dto";
+import { BeforeInsert, Column, Entity, ManyToOne } from "typeorm";
+import { ShippingInfo, OrderStatus } from "src/order/dto/order.dto";
 
 export interface ICartItem {
   quantity: number;

@@ -2,11 +2,11 @@ import { In, Repository } from "typeorm";
 import { Injectable } from "@nestjs/common";
 import { Guard } from "src/utils/guard.utils";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ICartItem, Order } from "src/order/entities/order.entity";
-import { CreateOrderDto, UpdateOrderDto, OrderDto } from "src/order/dto/order.dto";
-import { ResponseManager, StandardResponse } from "src/utils/responseManager.utils";
-import { Product } from "src/product/entities/product.entity";
 import { User } from "src/users/entities/user.entity";
+import { Product } from "src/product/entities/product.entity";
+import { ICartItem, Order } from "src/order/entities/order.entity";
+import { CreateOrderDto, UpdateOrderDto } from "src/order/dto/order.dto";
+import { ResponseManager, StandardResponse } from "src/utils/responseManager.utils";
 
 @Injectable()
 export class OrderService {
@@ -37,7 +37,7 @@ export class OrderService {
       cartItems: productWithQuantities,
     });
 
-    await newOrder.save();
+    await this.orderRepository.save(newOrder);
 
     return ResponseManager.StandardResponse({
       code: 201,
