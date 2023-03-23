@@ -1,32 +1,21 @@
-import "dotenv/config";
 import * as fs from "fs";
 import helmet from "helmet";
 import * as morgan from "morgan";
 import * as passport from "passport";
-import { DataSource } from "typeorm";
 import * as session from "express-session";
 import { AppModule } from "src/app.module";
 import * as compression from "compression";
+import { NestFactory, Reflector } from "@nestjs/core";
 import * as cookieParser from "cookie-parser";
-import { ValidationPipe } from "@nestjs/common";
-import { TypeormStore } from "connect-typeorm/out";
-import { SessionEntity } from "src/entities/session.entity";
-import { NestFactory, NestApplication } from "@nestjs/core";
+import { TypeormStore } from "connect-typeorm";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+import { ClassSerializerInterceptor, INestApplication, ValidationPipe } from "@nestjs/common";
 import { GlobalErrorHandler } from "src/utils/all-exception-filter";
 
 const bootstrap = async () => {
-  const app = await NestFactory.create<NestApplication>(AppModule);
-
-  const sessionRepository = await new DataSource({
-    type: "mysql",
-    username: "root",
-    password: process.env.LOCAL_DATABASE_PASSWORD,
-    database: "nestjstest",
-    entities: [SessionEntity],
-  }).initialize();
-
-  const greg = sessionRepository.getRepository(SessionEntity);
+  const app = await NestFactory.create<INestApplication>(AppModule);
+  const sessionEntity = await app.get(AppModule).getSessionEntity();
+  const port = process.env.PORT || 8989;
 
   app.use(morgan("dev")); //change to combined in production
   app.enableCors({ credentials: true, origin: ["http://localhost:3000"] });
@@ -37,21 +26,31 @@ const bootstrap = async () => {
 
   app.use(
     session({
-      name: "hackathon session id",
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
-      cookie: { maxAge: 60 * 60 * 24 * 7, httpOnly: true, sameSite: true },
+      name: "Hackathon Session",
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+        httpOnly: true,
+        sameSite: true,
+        // secure: process.env.NODE_ENV === "production",
+      },
       store: new TypeormStore({
-        name: "default",
+        cookie: {
+          maxAge: 1000 * 60 * 60 * 24 * 7,
+          httpOnly: true,
+          sameSite: true,
+        },
         cleanupLimit: 10,
-        limitSubquery: false, // If using MariaDB.
-        ttl: 60 * 60 * 24 * 7,
-      }).connect(greg),
+        limitSubquery: false,
+        ttl: 1000 * 60 * 60 * 24 * 7,
+      }).connect(sessionEntity),
     }),
   );
 
   app.use(passport.initialize());
+
   app.use(passport.session());
 
   const config = new DocumentBuilder()
@@ -65,10 +64,10 @@ const bootstrap = async () => {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("/", app, document);
   fs.writeFileSync("./swagger-documentation.json", JSON.stringify(document));
-
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalFilters(new GlobalErrorHandler());
-  await app.listen(8989);
+  await app.listen(port, () => console.log(`Server started on http://127.0.0.1:${port}`));
 };
 
 bootstrap();

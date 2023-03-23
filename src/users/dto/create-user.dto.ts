@@ -34,10 +34,3 @@ export class CreateUserDto {
   @Match("password")
   passwordConfirm: string;
 }
-
-/** TODO
- * Serialized user (Returning the user without the password)
- * custom validator for validating the password and password confirm field --- done
- * custom validator for validating the phone number field --- done
- * custom validator for validating the email number field --- done
- */

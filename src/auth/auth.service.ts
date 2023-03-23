@@ -1,6 +1,8 @@
 import * as crypto from "crypto";
 import { JwtService } from "@nestjs/jwt";
+import { Session } from "express-session";
 import { Email } from "src/utils/email.utils";
+import { Guard } from "src/utils/guard.utils";
 import { HttpStatus } from "@nestjs/common/enums";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/users/entities/user.entity";
@@ -31,14 +33,15 @@ export class AuthService {
 
     user = await this.usersRepository.save(user);
 
-    return ResponseManager.StandardResponse(
-      "Registration Successful",
-      "Verification Code Sent to Email",
-      user,
-    );
+    return ResponseManager.StandardResponse({
+      code: 201,
+      message: "Verification Code Sent to Email",
+      status: "Registration Successful",
+      data: user,
+    });
   }
 
-  async confirmEmail(token: string): Promise<StandardResponse<User>> {
+  async confirmEmail(token: string, session: Session): Promise<StandardResponse<User>> {
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
     const user = await this.usersRepository.findOneBy({
@@ -46,9 +49,11 @@ export class AuthService {
       emailVerificationTokenExpires: MoreThanOrEqual(new Date(Date.now())),
     });
 
-    if (!user) {
-      throw new HttpException("Token Invalid or Expired", 401);
-    }
+    Guard.AgainstNullOrUndefined(user, "Token", new HttpException("Token Invalid or Expired", 401));
+
+    // if (!user) {
+    //   throw new HttpException("Token Invalid or Expired", 401);
+    // }
 
     user.isEmailVerified = true;
     user.emailVerificationToken = null;
@@ -56,21 +61,34 @@ export class AuthService {
 
     await user.save();
 
-    const jwt = await this.jwtService.signAsync({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    });
+    this.regenerateSession(session);
 
-    return ResponseManager.StandardResponse("Successful", "Email Verified", user, jwt);
+    // const jwt = await this.jwtService.signAsync({
+    //   sub: user.id,
+    //   email: user.email,
+    //   role: user.role,
+    // });
+
+    return ResponseManager.StandardResponse({
+      code: 200,
+      message: "Email Verified",
+      status: "success",
+      data: user,
+    });
   }
 
   async resendEmailVerificationCode({ email }: EmailDto): Promise<StandardResponse<User>> {
     const user = await this.usersRepository.findOneBy({ email, isEmailVerified: false });
 
-    if (!user) {
-      throw new HttpException("User doesn't exist or Email already Verified", 404);
-    }
+    // if (!user) {
+    //   throw new HttpException("User doesn't exist or Email already Verified", 404);
+    // }
+
+    Guard.AgainstNullOrUndefined(
+      user,
+      "user",
+      new HttpException("User doesn't exist or Email already Verified", 404),
+    );
 
     const emailToken = await user.createEmailVErificationCode();
 
@@ -82,23 +100,25 @@ export class AuthService {
       throw new HttpException(`Couldn't send Email ${error}`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    return ResponseManager.StandardResponse("success", "Verification Code ReSent to Email", user);
+    return ResponseManager.StandardResponse({
+      code: 200,
+      status: "success",
+      message: "Verification Code ReSent to Email",
+      data: user,
+    });
   }
 
-  async login(user: User): Promise<{ token: string; status: string }> {
-    const token = await this.jwtService.signAsync({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    });
-    return { status: "success", token };
+  async login(user: User): Promise<{ message: string; status: string }> {
+    return { status: "success", message: "Logged in successfully" };
   }
 
   async forgotPassword({ email }: EmailDto) {
     const user = await this.usersRepository.findOneBy({ email });
-    if (!user) {
-      throw new HttpException("User not found", 400);
-    }
+
+    Guard.AgainstNotFound(user, "user");
+    // if (!user) {
+    //   throw new HttpException("User not found", 400);
+    // }
 
     const resetToken = await user.createPasswordResetToken();
 
@@ -110,11 +130,16 @@ export class AuthService {
       throw new HttpException(`Couldn't send Email ${error}`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    return ResponseManager.StandardResponse("success", "Password Reset Token sent to Email", user);
+    return ResponseManager.StandardResponse({
+      status: "success",
+      code: 200,
+      message: "Password Reset Token sent to Email",
+      data: user,
+    });
   }
 
   // RESET PASSWORD
-  async resetPassword({ resetToken, password }: ResetPasswordDto) {
+  async resetPassword({ resetToken, password }: ResetPasswordDto, session: Session) {
     const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
 
     const user = await this.usersRepository.findOneBy({
@@ -122,9 +147,11 @@ export class AuthService {
       passwordResetTokenExpires: MoreThanOrEqual(new Date(Date.now())),
     });
 
-    if (!user) {
-      throw new HttpException("User not found or Token expired", 404);
-    }
+    Guard.AgainstNotFound(user, "user", new HttpException("User not found or Token expired", 404));
+
+    // if (!user) {
+    //   throw new HttpException("User not found or Token expired", 404);
+    // }
 
     user.password = password;
 
@@ -133,28 +160,41 @@ export class AuthService {
 
     await user.save();
 
-    const token = await this.jwtService.signAsync({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    });
+    // const token = await this.jwtService.signAsync({
+    //   sub: user.id,
+    //   email: user.email,
+    //   role: user.role,
+    // });
 
-    return ResponseManager.StandardResponse("success", "Password has been Reset", user, token);
+    this.regenerateSession(session);
+
+    return ResponseManager.StandardResponse({
+      status: "success",
+      code: 200,
+      message: "Password has been Reset",
+      data: user,
+    });
   }
 
-  async changePassword(loggedInUser: User, { oldPassword, newPassword }: ChangePasswordDto) {
+  async changePassword(
+    loggedInUser: User,
+    { oldPassword, newPassword }: ChangePasswordDto,
+    session: Session,
+  ) {
     // check if user exists
     const user = await this.usersRepository.findOneBy({
       id: loggedInUser.id,
       email: loggedInUser.email,
     });
 
-    if (!user) {
-      throw new HttpException("User not found", 404);
-    }
+    Guard.AgainstNotFound(user, "user");
+
+    // if (!user) {
+    //   throw new HttpException("User not found", 404);
+    // }
 
     // check if posted current password is correct
-    const validPassword = await User.comparePasswords(oldPassword, user.password);
+    const validPassword = await user.comparePasswords(oldPassword, user.password);
     // return an error if anything is incorrect
     if (!validPassword) {
       throw new HttpException("Wrong Password", 400);
@@ -165,22 +205,35 @@ export class AuthService {
 
     await user.save();
 
-    const token = await this.jwtService.signAsync({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    });
+    this.regenerateSession(session);
 
-    return ResponseManager.StandardResponse("success", "Password has been Reset", user, token);
+    // const token = await this.jwtService.signAsync({
+    //   sub: user.id,
+    //   email: user.email,
+    //   role: user.role,
+    // });
+
+    return ResponseManager.StandardResponse({
+      status: "success",
+      code: 200,
+      message: "Password has been Reset",
+      data: user,
+    });
   }
 
   async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.usersRepository.findOneBy({ email });
 
-    if (user && (await User.comparePasswords(password, user.password))) {
+    if (user && (await user.comparePasswords(password, user.password))) {
       return user;
     }
 
     return null;
+  }
+  regenerateSession(session: Session): Session {
+    const sess = session.regenerate(
+      (err) => new HttpException(`Couldn't regenerate new session: ${err}}`, 500),
+    );
+    return sess;
   }
 }

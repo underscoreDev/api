@@ -3,38 +3,35 @@ import * as bcrypt from "bcryptjs";
 import { addMinutes } from "date-fns";
 import { IsEmail } from "class-validator";
 import { Exclude } from "class-transformer";
-import { ApiProperty } from "@nestjs/swagger";
 import BaseModel from "src/entities/baseModel.entity";
+import { Order } from "src/order/entities/order.entity";
 import { Role } from "src/auth/decorators/role.decorator";
 import { Review } from "src/reviews/entities/reviews.entity";
 import { Column, Entity, OneToMany, BeforeInsert } from "typeorm";
 
-@Entity({ name: "users" })
+@Entity()
 export class User extends BaseModel {
-  @Column()
-  @ApiProperty()
+  @Column({ nullable: false })
   name: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: false })
   @IsEmail()
-  @ApiProperty()
   email: string;
 
-  @Column({ unique: true })
-  @ApiProperty()
+  @Column({ unique: true, nullable: false })
   phoneNumber: string;
 
-  @Column()
-  @ApiProperty()
+  @Column({ nullable: true })
+  photo: string;
+
+  @Column({ nullable: false })
   @Exclude()
   password: string;
 
   @Column({ default: false })
-  @ApiProperty()
   isEmailVerified: boolean;
 
   @Column({ default: Role.User })
-  @ApiProperty()
   role: Role;
 
   @Column({ nullable: true })
@@ -60,8 +57,11 @@ export class User extends BaseModel {
   /**
    * Relationships
    */
-  @OneToMany(() => Review, (review) => review.user)
+  @OneToMany(() => Review, (review: Review) => review.user)
   reviews: Review[];
+
+  @OneToMany(() => Order, (order: Order) => order.user)
+  orders: Order[];
 
   /**
    * Hooks
@@ -71,14 +71,7 @@ export class User extends BaseModel {
     this.password = await bcrypt.hash(this.password, 12);
   }
 
-  /**
-   *  Compare Password Static Method
-   * @param inputedPassword string
-   * @param hashedPassword string
-   * @returns Promise<boolean>
-   */
-
-  static async comparePasswords(inputedPassword: string, hashedPassword: string): Promise<boolean> {
+  async comparePasswords(inputedPassword: string, hashedPassword: string): Promise<boolean> {
     return await bcrypt.compare(inputedPassword, hashedPassword);
   }
 

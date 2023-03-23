@@ -1,12 +1,13 @@
 import { Request as ERequest } from "express";
 import { AuthService } from "src/auth/auth.service";
 import { User } from "src/users/entities/user.entity";
-import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
+import { Session as ExpressSession } from "express-session";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { StandardResponse } from "src/utils/responseManager.utils";
 import { ChangePasswordDto, EmailDto, LoginDto, ResetPasswordDto } from "src/users/dto/login.dto";
+import { SessionGuard } from "./guards/session.guard";
 import {
   Get,
   Post,
@@ -19,6 +20,7 @@ import {
   Controller,
   UseInterceptors,
   ClassSerializerInterceptor,
+  Session,
 } from "@nestjs/common";
 
 @ApiTags("Auth")
@@ -39,16 +41,18 @@ export class AuthController {
   @HttpCode(200)
   async login(
     @Request() req: ERequest & { user: User },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    @Body() _loginDto: LoginDto,
-  ): Promise<{ token: string; status: string }> {
+    @Body() loginDto: LoginDto,
+  ): Promise<{ message: string; status: string }> {
     return await this.authService.login(req.user);
   }
 
   @HttpCode(200)
   @Post("verify-email/:token")
-  async confirmEmail(@Param("token") token: string): Promise<StandardResponse<User>> {
-    return this.authService.confirmEmail(token);
+  async confirmEmail(
+    @Param("token") token: string,
+    @Session() session: ExpressSession,
+  ): Promise<StandardResponse<User>> {
+    return this.authService.confirmEmail(token, session);
   }
 
   @HttpCode(200)
@@ -71,18 +75,22 @@ export class AuthController {
 
   @HttpCode(200)
   @Patch("reset-password")
-  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<StandardResponse<User>> {
-    return this.authService.resetPassword(resetPasswordDto);
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+    @Session() session: ExpressSession,
+  ): Promise<StandardResponse<User>> {
+    return this.authService.resetPassword(resetPasswordDto, session);
   }
 
   @HttpCode(200)
   @Patch("change-password")
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(SessionGuard)
   async changePassword(
     @Request() req: ERequest & { user: User },
     @Body() changePasswordDto: ChangePasswordDto,
+    @Session() session: ExpressSession,
   ): Promise<StandardResponse<User>> {
-    return this.authService.changePassword(req.user, changePasswordDto);
+    return this.authService.changePassword(req.user, changePasswordDto, session);
   }
 
   @HttpCode(200)

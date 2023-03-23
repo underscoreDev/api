@@ -31,14 +31,14 @@ export class GlobalErrorHandler implements ExceptionFilter {
       cause,
       name,
 
-      [exception instanceof BadRequestException || exception instanceof UnauthorizedException
-        ? "error"
-        : ""]:
-        exception instanceof BadRequestException
-          ? exception["response"]["message"]
-          : exception instanceof UnauthorizedException
-          ? "The Token you are trying to use to bypass my server is either invalid or expired"
-          : "",
+      // [exception instanceof BadRequestException || exception instanceof UnauthorizedException
+      //   ? "error"
+      //   : ""]:
+      //   exception instanceof BadRequestException
+      //     ? exception["response"]["message"]
+      //     : exception instanceof UnauthorizedException
+      //     ? "The Token you are trying to use to bypass my server is either invalid or expired"
+      //     : "",
     });
   }
 }

@@ -1,6 +1,6 @@
-import "dotenv/config";
 import * as nodemailer from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
+import "dotenv/config";
 
 const {
   EMAIL_USERNAME,
